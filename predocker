@@ -1,0 +1,2 @@
+Defaults:liveuser !requiretty
+liveuser ALL=(root) NOPASSWD: /usr/bin/predocker.sh
