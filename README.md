@@ -1,6 +1,9 @@
-# clcdutils
+# PVZD Live CD
 
-Installation and creation of live medium
+## Purpose
+Boot a CentOS 7 live medium into a GNOME desktop running inside a docker container with the PVZD client application.
+
+## Installation and creation of live medium
 
     sudo yum install docker livecd-tools
     cd <ppath to contain project>
