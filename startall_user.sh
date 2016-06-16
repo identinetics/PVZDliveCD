@@ -3,7 +3,7 @@
 zenity --notification --text "Looking for Docker data medium" --timeout 3
 logger -p local0.info "Looking for Docker data medium"
 for i in {1..10}; do
-    sudo /usr/bin/predocker.sh >> /tmp/pre.log 2>&1
+    sudo /usr/bin/predocker.sh >> /tmp/predocker.log 2>&1
     sleep 3
     [ $? -eq 0 ] && break
 done

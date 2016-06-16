@@ -4,6 +4,9 @@
 # This script searches for a device having a mark in the path of the mount point and 
 # changes the docker daemon' start options accordingly.
 
+# format debug output if using bash -x
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
 mark_dir=
 mark_filename="UseMe4DockerData"
 
@@ -26,30 +29,29 @@ do
 done
 
 
-function conf_startapp_script {
-  # docker script is started from UseMe4DockerData dir
-  logger -p local0.info "setting up startapp script"
+function patch_dockerd_config {
   dockerdata_dir=$1
-  echo "#!/bin/bash" > /tmp/startapp_inv.sh
-  echo "$dockerdata_dir/startapp.sh" > /tmp/startapp_inv.sh
-  chmod +x /tmp/startapp_inv.sh
+  logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching docker daemon options"
+  sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
+  systemctl daemon-reload
+  systemctl start docker
+  logger -p local0.info -s "Docker daemon patched and restarted"
 }
 
 
-function patch_dockerd_config {
-  logger -p local0.info  "predocker.sh: new docker dir is $1"
-  new_dock_dir=$1
-  #enable docker settings
-  #sed "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $new_dock_dir~" /tmp/docker.service
-  sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $new_dock_dir~" /usr/lib/systemd/system/docker.service
-  systemctl daemon-reload
-  systemctl start docker
+function conf_startapp_script {
+  # docker script is started from UseMe4DockerData dir
+  # (easy to change script without touching the bood image)
+  dockerdata_dir=$1
+  logger -p local0.info "setting up startapp script"
+  echo '#!/bin/bash' > /tmp/startapp_inv.sh
+  echo "$dockerdata_dir/startapp.sh" >> /tmp/startapp_inv.sh
+  chmod +x /tmp/startapp_inv.sh
 }
 
 
 function find_docker_dir_by_filelist {
 # find docker dir, argument is a dir list
-# echo $1
   dir_list=`cat $1`
 
   for dir in $dir_list
@@ -69,21 +71,20 @@ function find_docker_dir_by_filelist {
 
 
 logger -p local0.info "predocker.sh - waiting for auto-mounting of block devices to complete"
-sleep 10
+sleep 5
 
 
 if [[ -z "$mark_dir" ]]
 then
   logger -p local0.info -s "predocker.sh: Docker dir was not set, now searching mounted devices (see /tmp/mounted_dirs1)"
   df | awk '{print $6}' |sort|uniq > /tmp/mounted_dirs1
-  found_place=$(find_docker_dir_by_filelist "/tmp/mounted_dirs1")
+  dockerdata_dir=$(find_docker_dir_by_filelist "/tmp/mounted_dirs1")
   ret_val=$?
-  logger -p local0.info -s "predocker.sh: Docker dir = $found_place"
+  logger -p local0.info -s "predocker.sh: Docker dir = $dockerdata_dir"
   if [ "$ret_val" -eq "0" ]
   then
-    logger -p local0.info "predocker.sh: Docker dir is $found_place; now patching docker daemon options"
-    patch_dockerd_config $found_place
-    logger -p local0.info -s "Docker dir is $found_place; patched docker daemon options"
+    patch_dockerd_config $dockerdata_dir
+    conf_startapp_script $dockerdata_dir
    exit 0
   fi
 
@@ -106,17 +107,15 @@ then
   done
 
   logger -p local0.info "predocker.sh: Search in actually mounted devices (see /tmp/mounted_dirs2)"
-  found_place=$(find_docker_dir_by_filelist "/tmp/mounted_dirs2")
+  dockerdata_dir=$(find_docker_dir_by_filelist "/tmp/mounted_dirs2")
   ret_val=$?
-  logger -p local0.info "UseMe4DockerData = $found_place"
-  echo $found_place > /tmp/DockerDataDir
+  logger -p local0.info "UseMe4DockerData = $dockerdata_dir"
+  echo $dockerdata_dir > /tmp/DockerDataDir
 
   if [ "$ret_val" -eq "0" ]
   then
-    logger -p local0.info  "predocker.sh: Docker dir is $found_place; now patching docker daemon options"
-    patch_dockerd_config $found_place
-    conf_startapp_script $found_place
-    logger -p local0.info -s "Docker dir is $found_place; patched docker daemon options, configured startapp script"
+    patch_dockerd_config $dockerdata_dir
+    conf_startapp_script $dockerdata_dir
     exit 0
   fi
 
