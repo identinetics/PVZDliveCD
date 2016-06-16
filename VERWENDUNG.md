@@ -17,7 +17,7 @@
     touch /mnt/UseMe4DockerData
 
 ### Start
-- Beide Medien an den PV anstecken
+- Beide Medien an den PC anstecken
 - Vom Boot-Medium starten - dazu muss man meistens die Boot-Reiehenfolge im BIOS ändern
 - Warten bis das System gestartet ist
 - Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden, die Größe beträgt rund 1GB.
