@@ -13,9 +13,7 @@ This allows to have a secure boot environment for X11-applications deployed via 
 - Then the script startall_user.sh is executed to start the docker container
 
 
-## Build
-
-Installation and creation of live medium
+## Install build environment
 
     sudo yum install livecd-tools
     cd <path to contain project>
@@ -24,8 +22,12 @@ Installation and creation of live medium
     PROJ_HOME=$PWD
     echo $PWD > CLCDDIRvar
     mkdir livecache
-    sudo livecd-creator -d -v  -c sig-core-livemedia/centos-7-live-gnome-docker.cfg --cache=$PROJ_HOME/livecache/ --nocleanup
 
+## Build
+
+Installation and creation of live medium
+
+    sudo livecd-creator -d -v  -c sig-core-livemedia/centos-7-live-gnome-docker.cfg --cache=$PROJ_HOME/livecache/ --nocleanup
 
 The resulting file is in the project root (livecd-centos-7-live-gnome-docker-*.iso). Copy it to USB drive (2GB ore more)
 
@@ -45,4 +47,4 @@ The resulting file is in the project root (livecd-centos-7-live-gnome-docker-*.i
 
 - Insert both media into the PC
 - Boot from the boot-medium (you might have to modify the boot sequence in the BIOS)
-- Wait for the sysem to come up
+- Wait for the system to come up
