@@ -26,7 +26,17 @@ do
 done
 
 
-function patch_config {
+function conf_startapp_script {
+  # docker script is started from UseMe4DockerData dir
+  logger "setting up startapp script"
+  dockerdata_dir=$1
+  echo "#!/bin/bash" > /tmp/startapp_inv.sh
+  echo "$dockerdata_dir/startapp.sh" > /tmp/startapp_inv.sh
+  chmod +x /tmp/startapp_inv.sh
+}
+
+
+function patch_dockerd_config {
   logger "predocker.sh: new docker dir is $1"
   new_dock_dir=$1
   #enable docker settings
@@ -74,7 +84,7 @@ then
   if [ "$ret_val" -eq "0" ]
   then
     logger "predocker.sh: Docker dir is $found_place; now patching docker daemon options"
-    patch_config $found_place
+    patch_dockerd_config $found_place
     echo "Docker dir is $found_place; patched docker daemon options"
    exit 0
   fi
@@ -109,13 +119,15 @@ then
   logger "predocker.sh: Search in actually mounted devices (see /tmp/mounted_dirs2)"
   found_place=$(find_docker_dir_by_filelist "/tmp/mounted_dirs2")
   ret_val=$?
-  echo "found_place = $found_place"
+  logger "UseMe4DockerData = $found_place"
+  echo $found_place > /tmp/DockerDataDir
 
   if [ "$ret_val" -eq "0" ]
   then
     logger "predocker.sh: Docker dir is $found_place; now patching docker daemon options"
-    patch_config $found_place
-    echo "Docker dir is $found_place; patched docker daemon options"
+    patch_dockerd_config $found_place
+    conf_startapp_script $found_place
+    echo "Docker dir is $found_place; patched docker daemon options, configured startapp script"
     exit 0
   fi
 
