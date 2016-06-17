@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=/bin/gnome-terminal --hide-menubar -e /usr/local/bin/dockerapp_mon.sh
+Hidden=false
+NoDisplay=false
+Terminal=True
+X-GNOME-Autostart-enabled=true
+Name[en_US]=DockerAppMonitor
+Name=DockerAppMonitor
