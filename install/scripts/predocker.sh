@@ -119,6 +119,6 @@ then
     exit 0
   fi
 
-  logger -p local0.info -s "Docker dir not found. Mount device and set it as parameter: /usr/bin/predocker.sh -d docker_data_directory"
+  logger -p local0.info -s "Docker dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
   exit 1
 fi
