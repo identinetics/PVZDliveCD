@@ -70,10 +70,6 @@ function find_docker_dir_by_filelist {
 }
 
 
-logger -p local0.info "predocker.sh - waiting for auto-mounting of block devices to complete"
-sleep 5
-
-
 if [[ -z "$mark_dir" ]]
 then
   logger -p local0.info -s "predocker.sh: Docker dir was not set, now searching mounted devices (see /tmp/mounted_dirs1)"
@@ -85,6 +81,7 @@ then
   then
     patch_dockerd_config $dockerdata_dir
     conf_startapp_script $dockerdata_dir
+    export DOCKERDATA_DIR=$dockerdata_dir
    exit 0
   fi
 
@@ -116,6 +113,7 @@ then
   then
     patch_dockerd_config $dockerdata_dir
     conf_startapp_script $dockerdata_dir
+    export DOCKERDATA_DIR=$dockerdata_dir
     exit 0
   fi
 
