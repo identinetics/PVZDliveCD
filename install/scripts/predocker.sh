@@ -81,7 +81,7 @@ then
   then
     patch_dockerd_config $dockerdata_dir
     conf_startapp_script $dockerdata_dir
-    export DOCKERDATA_DIR=$dockerdata_dir
+    echo "$dockerdata_dir" > /tmp/dockerdata_dir
    exit 0
   fi
 
@@ -113,7 +113,7 @@ then
   then
     patch_dockerd_config $dockerdata_dir
     conf_startapp_script $dockerdata_dir
-    export DOCKERDATA_DIR=$dockerdata_dir
+    echo "$dockerdata_dir" > /tmp/dockerdata_dir
     exit 0
   fi
 
