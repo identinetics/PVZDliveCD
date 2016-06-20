@@ -32,9 +32,16 @@
 
 Aufruf:
 
-    docker exec -it pvzd-admin bash
+    docker exec -it pvzd-client bash
     cd /opt/PVZDpolman/PolicyManager/bin
     # Zertifikatsverwaltung
     ./PATool.sh --help
     # Rechteverwaltung
     ./PMP.sh --help
+
+### Bekannte Probleme
+
+Wenn das System hart abgeschlatet wird, bleibt der Container bestehen und muss manuell gelöscht werden, bevor 
+die Anwendung neu gestartet wird:
+
+    docker rm pvzd-client
