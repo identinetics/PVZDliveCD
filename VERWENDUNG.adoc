@@ -17,7 +17,24 @@
     touch /mnt/UseMe4DockerData
 
 ### Start
-- Beide Medien an den PC anstecken
+- Beide Medien und den Kartenleser an den PC anstecken
 - Vom Boot-Medium starten - dazu muss man meistens die Boot-Reiehenfolge im BIOS ändern
 - Warten bis das System gestartet ist
-- Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden, die Größe beträgt rund 1GB.
+- Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden, die Größe beträgt rund 1,6GB.
+- Das system startet in die GUI-Anwendung für den Portaladminsitrator. Wird sie beendet, wird auch der App-Container beendet.
+- Um die App neu zu starten, ruft am im Terminel `/usr/local/bin/startall_user.sh' auf. Oder man bootet wieder.
+
+### Weiter Funktionen für den Depositar
+Über das Command-Line Interface werden weitere Funktionen bereitgestellt:
+
+- Zertifikatsverwaltung
+- Rechteverwaltung (Registrierung von PV-Teilnehmern, ihren Domänen und den Portaladministratoren)
+
+Aufruf:
+
+    docker exec -it pvzd-admin bash
+    cd /opt/PVZDPolMan/PolicyManager/bin
+    # Zertifikatsverwaltung
+    ./PATool.sh --help
+    # Rechteverwaltung
+    ./PMP.sh --help
