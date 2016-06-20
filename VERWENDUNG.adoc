@@ -33,7 +33,7 @@
 Aufruf:
 
     docker exec -it pvzd-admin bash
-    cd /opt/PVZDPolMan/PolicyManager/bin
+    cd /opt/PVZDpolman/PolicyManager/bin
     # Zertifikatsverwaltung
     ./PATool.sh --help
     # Rechteverwaltung
