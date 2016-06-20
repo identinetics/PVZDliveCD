@@ -41,12 +41,13 @@ function patch_dockerd_config {
 
 function conf_startapp_script {
   # docker script is started from UseMe4DockerData dir
-  # (easy to change script without touching the bood image)
+  # (easy to change script without touching the boot image)
   dockerdata_dir=$1
   logger -p local0.info "setting up startapp script"
   echo '#!/bin/bash' > /tmp/startapp_inv.sh
-  echo "$dockerdata_dir/startapp.sh" >> /tmp/startapp_inv.sh
+  echo "$dockerdata_dir/startapp.sh -t" >> /tmp/startapp_inv.sh
   chmod +x /tmp/startapp_inv.sh
+  cp -n /usr/local/bin/startapp.sh $dockerdata_dir/   #copy default script
 }
 
 
