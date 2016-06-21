@@ -29,28 +29,8 @@
 - Vom Boot-Medium starten - dazu muss man meistens die Boot-Reiehenfolge im BIOS ändern
 - Das System muss online sein, damit beim Start Updates eingespielt werden können
 - Warten bis das System gestartet ist
-- Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden, die Größe beträgt rund 1GB.
-- Die Bürgerkartenumgebung wird automatisch gestartet
-- Das PVZD GUI wird automatisch gestartet.
-- Wird das GUI beendet, wird auch der Docker Container beendet und gelöscht. Für einen Neustart wäre 
-  auf der Commandline `/usr/local/bin/startall_user.sh` auszuführen.
+- Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden.
+- Die weiteren Funktionen sind bei entsprechenden Container beschrieben
 
-### Funktionen für den Depositar
-- Über das Terminal werden weitere Funktionen angeboten:
-    
-    cd /opt/PVZDpolman/PolicyManager/bin/
-    # Zertifikate verwalten
-    ./PAtool.sh --help 
-    # Policy Management Point verwalten (PV-Teilnehmer und ihre Domänen, Portal-Admins)
-    ./PMP.sh --help
-        
-### Sonstiges
 
-Um Daten auch per Datenträger einlesen zu können kann ein Windows-kompatibler Datenträger helfen. Um
-eine 2. Partition auf dem Docker-USB Drive einzurichten, würde man bei einem 16GB-Stick z.B. wie folgt vorgehen:
 
-    # mit dmesg die Geräteadresse ermitteln, z.B. /dev/sdb
-    sudo fdisk /dev/sdb
-    # 2 primäre Partitionen erstellen, 13G + Rest (ca. 2,5G)
-    sudo mkfs.ext4 -L dockerdata /dev/sdb1
-    sudo mkfs.vfat -F 32 -n pvzddata /dev/sdb2
