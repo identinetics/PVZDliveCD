@@ -22,6 +22,7 @@ while getopts ":hpt" opt; do
 done
 shift $((OPTIND-1))
 
+notify-send "Pulling docker image $DOCKER_IMAGE; please wait"
 logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 docker pull $DOCKER_IMAGE
 notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
