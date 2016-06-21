@@ -7,14 +7,25 @@ into a predefined docker image. Docker data and the container user's home
 are stored on a device with a writeable filesystem. The device is tagged 
 with a filename in the root directory for auto-discovery at boot time.
 
+There are currently 2 docker images supporting this LiveCD:
+    https://github.com/identinetics/PVZDclient[PCZDclient@Github] 
+    https://github.com/identinetics/docker-eTokenPro[docker-eTokenPro@Github] 
+
 ## Concept
 
-- When Gnome is starting it executes a script 'startall_user.sh'. This in turn executes 'predocker.sh'.
-  This script identifies the writeable filesystem to be used for storing docker data (images, container etc.).
-  The respective filesystem is marked by a file with the name 'UseMe4DockerData' in the root directory.
-- If the UseMe4DockerData filesystem is found, the docker daemon is reconfigured to use this filesystem
-- Then the script startall_user.sh is executed to start the docker container
-
+* Booting the LiveCD will bring up the Gnome desktop for user livecd. 
+* Gnome has an autostart item to execute /usr/local/bin/start.sh. 
+* start.sh will do 2 steps: 
+ ** Execute 'predocker.sh'. This script has following tasks:
+ *** Search the writeable filesystem to be used for storing docker data 
+    (images, container etc.), called DOCKERDATA_DIR. The respective
+    filesystem has to be marked by a file with the name 'UseMe4DockerData' 
+    in the root directory. 
+ *** Once the UseMe4DockerData filesystem is found, the docker daemon is 
+    reconfigured to use DOCKERDATA_DIR. 
+ *** predocker.sh will then copy a docker start script to DOCKERDATA_DIR 
+     and create a call script at /tmp/startapp_inv.sh.
+ ** Execute /tmp/startapp_inv.sh. This will pull and run the docker container. 
 
 ## Install build environment
 
@@ -26,35 +37,39 @@ with a filename in the root directory for auto-discovery at boot time.
     echo $PWD > CLCDDIRvar
     mkdir livecache
 
-## Configure & Build
+## Configure, build and initialize boot device
 
 - Set the DOCKER_IMAGE to be executed in install/scripts/startapp.sh
-- Build the ISO image
+- Build the ISO image:
 
     sudo livecd-creator -d -v  -c sig-core-livemedia/centos-7-live-gnome-docker.cfg --cache=$PROJ_HOME/livecache/ --nocleanup
 
-- Copy the ISO image to your boot device
-The resulting file is in the project root (livecd-centos-7-live-gnome-docker-*.iso). Copy it to USB drive (2GB ore more)
+- Copy the ISO image to your boot device (DVD or USB Flash >= 1GB), e.g. like this:
 
-    dd if=livecd-centos-7-live-gnome-docker-<timestamp>.iso of=/dev/<usb-drive>
+    // insert USB-stick into hardware
+    dmesg | tail  # checl the the device name of the USB-drive
+    dd if=livecd-centos-7-gnome-docker-<imageid>.iso of=/dev/<usb-drive>
 
 ## Usage (generic)
-
-
 
 - You require 2 media:
     1. the boot medium with the LiveCD (should be read-only, such as CD-ROM), and
     2. a writeable medium, large enough to contain a docker image and docker work files. Start with at least 8GB for a GUI.
 - Format the writeable medium with a standard linux filesystem, such as ext4 and mark it with a a file named 'UseMe4DockerData'. E.g.:
 
-    # check dmesg for the actual device of your USB flash drive
+    // check dmesg for the actual device of your USB flash drive
     mkfs.vfat /dev/sdb1
     mount /dev/dsb1  /mnt
     touch /mnt/UseMe4DockerData
 
-- Insert both media into the PC
+- Insert both media into the PC and connect your smartcard reader. Any PCSC-compliant reader should work.
 - Boot from the boot-medium (you might have to modify the boot sequence in the BIOS)
 - Wait for the system to come up
+
+. Boot selection issues
+- You might not have access to the BIOS settings - check with your admin
+- This LiveCD is not working with UEFI Microsoft Secure Boot. (Need to
+  replace CentOS with Fedora)
 
 ## Security Considerations
 - The execution environment (i.e. the hardware to boot the system) must be trusted.
