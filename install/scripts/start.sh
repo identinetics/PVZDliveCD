@@ -3,7 +3,7 @@
 # format debug output if using bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-zenity --notification --text "Looking for Docker data medium" --timeout 3
+notify-send "Looking for Docker data medium"
 logger -p local0.info "Looking for Docker data medium"
 
 logger -p local0.info "waiting for auto-mounting of block devices to complete"
@@ -17,9 +17,9 @@ done
 #RET_VAR=$?
 if [ $? -eq 0 ]
 then 
-  zenity --notification --text "Docker data medium found, starting docker image" --timeout 3
+  notify-send  "Docker data medium found, starting docker image"
   /tmp/startapp_inv.sh > /tmp/startapp_inv.log 2>&1
 else
-  zenity --notification --text "Docker data medium not found. Connect medium and run 'sudo /usr/local/bin/start.sh -d /dev/<my-docker-drive>'" --timeout 3
+  notify-send "Docker data medium not found. Connect medium and run 'sudo /usr/local/bin/start.sh -d /dev/<my-docker-drive>'" --timeout 3
 fi
 

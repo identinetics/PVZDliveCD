@@ -24,7 +24,7 @@ shift $((OPTIND-1))
 
 logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 docker pull $DOCKER_IMAGE
-
+notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
 
 DOCKERDATA_DIR=$(cat /tmp/dockerdata_dir)
 logger -p local0.info "mapping container user's home to $DOCKERDATA_DIR"
@@ -34,7 +34,7 @@ chown -R liveuser:liveuser $DOCKERDATA_DIR/home/liveuser/
 CONTAINERNAME='x11-app'
 
 # remove dangling container
-if [ "$(docker ps -a | grep $CONTAINERNAME)" == "" ]; then
+if [ "$(docker ps -a | grep $CONTAINERNAME)" == "$CONTAINERNAME" ]; then
     docker rm $(docker ps -a -q)
 fi
 
