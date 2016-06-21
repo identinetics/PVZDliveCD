@@ -16,6 +16,11 @@
     mount /dev/sdb1  /mnt
     touch /mnt/UseMe4DockerData
 
+- Um die erzeugten Dateien per Mail zu vershicken, muss man in der patool_config.json
+  einen Mail-Account einrichten. Für Berechtigte gibt es einen vorkonfigurierten Account, der wie folgt
+  eingerichtet werden kann:
+   
+    openssl enc -d -aes-256-cbc -in patool_config.json.enc -out patool_config.json
 
 ### Start
 - Beide Medien und einen Smartcard Leser (PCSC) an den PC anstecken
