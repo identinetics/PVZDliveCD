@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DOCKER_IMAGE='rhoerbe/pvzd-client-app'
+
 runopt='-it'
 while getopts ":hpt" opt; do
   case $opt in
@@ -20,16 +22,16 @@ while getopts ":hpt" opt; do
 done
 shift $((OPTIND-1))
 
-DOCKER_IMAGE='rhoerbe/pvzd-client-app'
 logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 docker pull $DOCKER_IMAGE
 
 
-CONTAINERNAME='pvzd-client'
 DOCKERDATA_DIR=$(cat /tmp/dockerdata_dir)
 logger -p local0.info "mapping container user's home to $DOCKERDATA_DIR"
 mkdir -p $DOCKERDATA_DIR/home/liveuser/
 chown -R liveuser:liveuser $DOCKERDATA_DIR/home/liveuser/
+
+CONTAINERNAME='x11-app'
 
 # remove dangling container
 if [ "$(docker ps -a | grep $CONTAINERNAME)" == "" ]; then
