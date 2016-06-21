@@ -1,0 +1,7 @@
+*/.DS-Store
+.idea/*
+*.iso
+*.log
+CLCDDIRvar
+unused/*
+livecache
