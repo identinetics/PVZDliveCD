@@ -18,30 +18,10 @@
 
 ### Start
 - Beide Medien und den Kartenleser an den PC anstecken
-- Vom Boot-Medium starten - dazu muss man meistens die Boot-Reiehenfolge im BIOS ändern
+- Vom Boot-Medium starten - dazu muss man meistens die Boot-Reihenfolge im BIOS ändern
 - Warten bis das System gestartet ist
-- Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden, die Größe beträgt rund 1,6GB.
-- Das system startet in die GUI-Anwendung für den Portaladminsitrator. Wird sie beendet, wird auch der App-Container beendet.
-- Um die App neu zu starten, ruft am im Terminel `/usr/local/bin/startall_user.sh' auf. Oder man bootet wieder.
-
-### Weiter Funktionen für den Depositar
-Über das Command-Line Interface werden weitere Funktionen bereitgestellt:
-
-- Zertifikatsverwaltung
-- Rechteverwaltung (Registrierung von PV-Teilnehmern, ihren Domänen und den Portaladministratoren)
-
-Aufruf:
-
-    docker exec -it pvzd-client bash
-    cd /opt/PVZDpolman/PolicyManager/bin
-    # Zertifikatsverwaltung
-    ./PATool.sh --help
-    # Rechteverwaltung
-    ./PMP.sh --help
-
-### Bekannte Probleme
-
-Wenn das System hart abgeschlatet wird, bleibt der Container bestehen und muss manuell gelöscht werden, bevor 
-die Anwendung neu gestartet wird:
-
-    docker rm pvzd-client
+- Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden
+- Der Download wird nicht automatisch angezeigt, kann aber erkannt werden, wenn die letzte Meldung
+  un /var/log/dockerapp.log "pulling docker image" enthält
+- Die weiteren Schritt des Starts sind in der Anwendungsdoku enthalten
+- Um die App neu zu starten, ruft am im Terminal `/usr/local/bin/start.sh' auf. Oder man bootet wieder.
