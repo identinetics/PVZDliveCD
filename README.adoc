@@ -82,3 +82,7 @@ There are currently 2 docker images supporting this LiveCD:
 - Docker container security: containers reside on unprotected writeable media. 
   To prevent tampering, the container is discarded after each usage and a new
   one is on rebooting the system.
+
+## Monitoring
+- script messages go to /var/log/dockerapp.log
+- docker message go to  /tmp/startapp_inv.log
