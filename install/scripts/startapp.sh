@@ -44,12 +44,19 @@ if $sudo docker ps -a | grep $CONTAINERNAME > /dev/null; then
     $sudo docker rm $CONTAINERNAME
 fi
 
+export ENVSETTINGS="
+    -e DISPLAY=$DISPLAY
+"
+if [ -e $http_proxy ]
+export VOLMAPPING="
+    --privileged -v /dev/bus/usb:/dev/bus/usb
+    -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
+    -v $DOCKERDATA_DIR/home/liveuser/:/home/liveuser:Z
+"
+
 logger -p local0.info "starting docker image $DOCKER_IMAGE"
 $sudo docker run $runopt --rm \
     --hostname=$CONTAINERNAME --name=$CONTAINERNAME \
     --log-driver=syslog --log-opt syslog-facility=local0 \
-    --privileged -v /dev/bus/usb:/dev/bus/usb \
-    -e DISPLAY=$DISPLAY \
-    -v /tmp/.X11-unix/:/tmp/.X11-unix \
-    -v $DOCKERDATA_DIR/home/liveuser/:/home/liveuser:Z \
+    $ENVSETTINGS $VOLMAPPING \
     $DOCKER_IMAGE
