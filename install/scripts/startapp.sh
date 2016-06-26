@@ -26,7 +26,7 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
-notify-send "Pulling docker image $DOCKER_IMAGE; please wait"  -t 50000
+notify-send "Pulling docker image $DOCKER_IMAGE; please wait" -t 50000
 logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 $sudo docker pull $DOCKER_IMAGE
 notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
@@ -44,11 +44,16 @@ if $sudo docker ps -a | grep $CONTAINERNAME > /dev/null; then
     $sudo docker rm $CONTAINERNAME
 fi
 
-export ENVSETTINGS="
+ENVSETTINGS="
     -e DISPLAY=$DISPLAY
+    -e http_proxy=$http_proxy
+    -e https_proxy=$https_proxy
+    -e HTTP_PROXY=$HTTP_PROXY
+    -e HTTPS_PROXY=$HTTPS_PROXY
+    -e no_proxy=$no_proxy
 "
-if [ -e $http_proxy ]
-export VOLMAPPING="
+LOGSETTINGS="--log-driver=syslog --log-opt syslog-facility=local0"
+VOLMAPPING="
     --privileged -v /dev/bus/usb:/dev/bus/usb
     -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
     -v $DOCKERDATA_DIR/home/liveuser/:/home/liveuser:Z
@@ -57,6 +62,5 @@ export VOLMAPPING="
 logger -p local0.info "starting docker image $DOCKER_IMAGE"
 $sudo docker run $runopt --rm \
     --hostname=$CONTAINERNAME --name=$CONTAINERNAME \
-    --log-driver=syslog --log-opt syslog-facility=local0 \
-    $ENVSETTINGS $VOLMAPPING \
+    $ENVSETTINGS $LOGSETTINGS $VOLMAPPING \
     $DOCKER_IMAGE
