@@ -68,7 +68,7 @@ function setup_all {
   logger -p local0.info -s "predocker.sh: Data dir = $data_dir"
   set_http_proxy_config
   patch_dockerd_config $data_dir
-  create_exportenv_script
+  create_exportenv_script $data_dir
   conf_startapp_script $data_dir
 }
 
