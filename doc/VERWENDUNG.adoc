@@ -8,7 +8,7 @@
     2. ein beschreibbares Daten-Medium, groß genug für ein Docker Image, Arbeits- und
        Konfigurationsdateien. (Empfohlene Größe >= 8GB.)
 
-- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:README.adoc[README])
+- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../README.adoc[README])
 - Das Daten-Medium wird mit einem Linux Filesystem, z.B. ext4 formatiert. Um es erkennbar zu machen,
   wird es im Wurzelverzeichnis mit der (leeren) Datei 'UseMe4DockerData' markiert. Das kann zum Beispiel wie folgt
   gemacht werden. Zuerst stellt man den Device-PFad fest, etwa mit `dmesg | tail`, gleich nachdem der USB flash drive
