@@ -50,6 +50,9 @@ There are currently 2 docker images supporting this LiveCD:
     dmesg | tail  # checl the the device name of the USB-drive
     dd if=livecd-centos-7-gnome-docker-<imageid>.iso of=/dev/<usb-drive>
 
+    // or like this on OSX (dd dead slow if not using rdisk; block size needs lowercase m):
+    sudo dd bs=1m if=livecd-centos-7-gnome-docker-pvzdclient-v0_32.iso  of=/dev/rdisk2
+
 ## Usage (generic)
 
 - You require 2 media:

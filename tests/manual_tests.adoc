@@ -1,0 +1,6 @@
+1. boot livecd, no docker data drive provided
+ expected result: dialogue requiring media
+
+2. boot livecd, no docker data drive provided; empty except drive marker
+
+3. boot livecd, with docker data already loaded
