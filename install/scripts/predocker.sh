@@ -48,6 +48,10 @@ function conf_startapp_script {
   echo "$dockerdata_dir/startapp.sh -t" >> /tmp/startapp_inv.sh
   chmod +x /tmp/startapp_inv.sh
   cp -n /usr/local/bin/startapp.sh $dockerdata_dir/   #copy default script
+  # set http proxy
+  cp -n /usr/local/bin/set_httpproxy.sh $dockerdata_dir/   #copy default script
+  chmod +x /$dockerdata_dir/set_httpproxy.sh
+  /$dockerdata_dir/set_httpproxy.sh
 }
 
 
