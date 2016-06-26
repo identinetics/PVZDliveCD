@@ -5,10 +5,10 @@
 - Man benötigt 2 Speichermedien:
 
     1. Das Boot-Medium mit dem LiveCD Image (sollte read-only sein, z.B. DVD-R), und
-    2. ein beschreibbares Daten-Medium, groß genug für ein Docker image, Arbeits- und
+    2. ein beschreibbares Daten-Medium, groß genug für ein Docker Image, Arbeits- und
        Konfigurationsdateien. (Empfohlene Größe >= 8GB.)
 
-- Das Boot-Medium muss mit dem live-CD ISO-Image bespielt werden (siehe README)
+- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:README.adoc[README])
 - Das Daten-Medium wird mit einem Linux Filesystem, z.B. ext4 formatiert. Um es erkennbar zu machen,
   wird es im Wurzelverzeichnis mit der (leeren) Datei 'UseMe4DockerData' markiert. Das kann zum Beispiel wie folgt
   gemacht werden. Zuerst stellt man den Device-PFad fest, etwa mit `dmesg | tail`, gleich nachdem der USB flash drive
@@ -27,12 +27,15 @@
   ist möglich, indem die Datei set_httpproxy.sh im Daten-Medium angepasst wird.
   Ein Template wird beim ersten Start an die Stelle kopiert.
 
+    gedit $DATADIR/set_httpproxy_settings.sh
+
 ### Start
 - Boot- und Daten-Medium sowie den Kartenleser an den PC anstecken
 - Vom Boot-Medium starten - dazu muss man meistens die Boot-Reihenfolge im BIOS ändern
 - Warten bis das System gestartet ist
 - Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden
 - Der Download wird nicht automatisch angezeigt, kann aber erkannt werden, wenn die letzte Meldung
-  un /var/log/dockerapp.log "pulling docker image" enthält
+  in /var/log/dockerapp.log "pulling docker image" enthält
 - Die weiteren Schritt des Starts sind in der Anwendungsdoku enthalten
 - Um die App neu zu starten, ruft am im Terminal `/usr/local/bin/start.sh' auf. Oder man bootet wieder.
+
