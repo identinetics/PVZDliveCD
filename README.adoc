@@ -29,7 +29,7 @@ There are currently 2 docker images supporting this LiveCD:
 
 ## Get or make the boot image
 
-You may eithe rdownload the image or bulid it yourself.
+You may either download the image or build it yourself.
 
 ### Download the ISO image
 
