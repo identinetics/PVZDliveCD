@@ -31,7 +31,6 @@ logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 $sudo docker pull $DOCKER_IMAGE
 notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
 
-DOCKERDATA_DIR=$(cat /tmp/dockerdata_dir)
 logger -p local0.info "mapping container user's home to $DOCKERDATA_DIR"
 $sudo mkdir -p $DOCKERDATA_DIR/home/liveuser/
 $sudo chown -R liveuser:liveuser $DOCKERDATA_DIR/home/liveuser/
