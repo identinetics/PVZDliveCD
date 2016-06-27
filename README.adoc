@@ -27,7 +27,16 @@ There are currently 2 docker images supporting this LiveCD:
      and create a call script at /tmp/startapp_inv.sh.
  ** Execute /tmp/startapp_inv.sh. This will pull and run the docker container. 
 
-## Install build environment
+## Get or make the boot image
+
+You may eithe rdownload the image or bulid it yourself.
+
+### Download the ISO image
+
+    https://www.test.portalverbund.gv.at/pvzdclient/livecd-centos-7-gnome-docker-pvzdclient-v0_38.iso[livecd-pvzdclient-v0_38]
+
+### Make the ISO image
+####Install build environment
 
     sudo yum install livecd-tools
     cd <path to contain project>
@@ -37,13 +46,14 @@ There are currently 2 docker images supporting this LiveCD:
     echo $PWD > CLCDDIRvar
     mkdir livecache
 
-## Configure, build and initialize boot device
+#### Configure, build and initialize boot device
 
 - Set the DOCKER_IMAGE to be executed in install/scripts/startapp.sh
 - Build the ISO image:
 
     sudo livecd-creator -d -v  -c sig-core-livemedia/centos-7-live-gnome-docker.cfg --cache=$PROJ_HOME/livecache/ --nocleanup
 
+### Copy to boot device
 - Copy the ISO image to your boot device (DVD or USB Flash >= 1GB), e.g. like this:
 
     // insert USB-stick into hardware
