@@ -8,8 +8,9 @@ are stored on a device with a writeable filesystem. The device is tagged
 with a filename in the root directory for auto-discovery at boot time.
 
 There are currently 2 docker images supporting this LiveCD:
-    https://github.com/identinetics/PVZDclient[PCZDclient@Github] 
-    https://github.com/identinetics/docker-eTokenPro[docker-eTokenPro@Github] 
+
+    - https://github.com/identinetics/PVZDclient[PCZDclient@Github] 
+    - https://github.com/identinetics/docker-eTokenPro[docker-eTokenPro@Github] 
 
 ## Concept
 
