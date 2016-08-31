@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # docker data like images, container and volumes need to reside in a writeable filesystem.
-# This script searches for a device having a mark in the path of the mount point and 
-# changes the docker daemon' start options accordingly.
+# This script searches for a device having a mark in the path of the mount point. If found
+# (or passed via cl arg) it changes the docker daemon's and app' start options accordingly.
+# If not found it exits with return code 1.
 
 # format debug output if using bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -29,8 +30,19 @@ do
 done
 
 
+function set_http_proxy_config {
+  if [ ! -e '/$dockerdata_dir/set_httpproxy.sh' ]; then
+    logger -p local0.info "predocker.sh: copying default http proxy config"
+    cp -n /usr/local/bin/set_httpproxy.sh $data_dir/
+    chmod +x /$data_dir/set_httpproxy.sh
+  fi
+  logger -p local0.info "predocker.sh: setting http proxy config"
+  source /$data_dir/set_httpproxy.sh
+}
+
 function patch_dockerd_config {
-  dockerdata_dir=$1
+  dockerdata_dir=$1/docker
+  mkdir $dockerdata_dir
   logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching docker daemon options"
   sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
   systemctl daemon-reload
@@ -38,27 +50,33 @@ function patch_dockerd_config {
   logger -p local0.info -s "Docker daemon patched and restarted"
 }
 
+function create_exportenv_script {
+  data_dir=$1
+  logger -p local0.info "setting up export env script"
+  echo '#!/bin/bash' > /tmp/set_data_dir.sh
+  echo "export DATADIR=$data_dir" >> /tmp/set_data_dir.sh
+}
 
 function conf_startapp_script {
   # docker script is started from UseMe4DockerData dir
-  # (easy to change script without touching the bood image)
-  dockerdata_dir=$1
-  logger -p local0.info "setting up startapp script"
-  echo '#!/bin/bash' > /tmp/startapp_inv.sh
-  echo "$dockerdata_dir/startapp.sh" >> /tmp/startapp_inv.sh
-  chmod +x /tmp/startapp_inv.sh
+  # (easy to change script without touching the boot image)
+  data_dir=$1
+  cp -n /usr/local/bin/startapp.sh $data_dir/   #copy default script
 }
 
+function setup_all {
+  logger -p local0.info -s "predocker.sh: Data dir = $data_dir"
+  set_http_proxy_config
+  patch_dockerd_config $data_dir
+  create_exportenv_script $data_dir
+  conf_startapp_script $data_dir
+}
 
-function find_docker_dir_by_filelist {
-# find docker dir, argument is a dir list
+function find_data_dir_by_filelist {
   dir_list=`cat $1`
-
-  for dir in $dir_list
-  do
+  for dir in $dir_list; do
     # echo "Checking: $dir"
-    if [ -e "$dir/$mark_filename" ]
-    then
+    if [ -e "$dir/$mark_filename" ]; then
     # echo "Dir was found: $dir"
       lmark_dir=$dir
       echo $lmark_dir
@@ -69,54 +87,47 @@ function find_docker_dir_by_filelist {
   return 1
 }
 
-
-if [[ -z "$mark_dir" ]]
-then
-  logger -p local0.info -s "predocker.sh: Docker dir was not set, now searching mounted devices (see /tmp/mounted_dirs1)"
+function  get_mounted_disks {
   df | awk '{print $6}' |sort|uniq > /tmp/mounted_dirs1
-  dockerdata_dir=$(find_docker_dir_by_filelist "/tmp/mounted_dirs1")
-  ret_val=$?
-  logger -p local0.info -s "predocker.sh: Docker dir = $dockerdata_dir"
-  if [ "$ret_val" -eq "0" ]
-  then
-    patch_dockerd_config $dockerdata_dir
-    conf_startapp_script $dockerdata_dir
-    export DOCKERDATA_DIR=$dockerdata_dir
-   exit 0
-  fi
+}
 
+function  mount_not_yet_mounted_disks {
   logger -p local0.info -s "predocker.sh: mount not mounted drives (see /tmp: mounted_disks, all_disks, notmounted_disks)"
-  #get mounted
   mount | cut -d\  -f 1|sort|uniq > /tmp/mounted_disks
-  #get all disks
   lsblk -lp|grep part|cut -d\  -f 1|sort > /tmp/all_disks
-  #get needed
-  comm -13 /tmp/mounted_disks /tmp/all_disks > /tmp/notmounted_disks
+  comm -13 /tmp/mounted_disks /tmp/all_disks > /tmp/notmounted_disks    #get needed
   flist=`cat /tmp/notmounted_disks`
 
   echo -n > /tmp/mounted_dirs2
   #mount found disks and prepare file list
-  for disk in $flist
-  do
+  for disk in $flist; do
     mkdir /mnt/${disk:5}
     mount $disk /mnt/${disk:5}
     echo /mnt/${disk:5} >> /tmp/mounted_dirs2
   done
+}
 
-  logger -p local0.info "predocker.sh: Search in actually mounted devices (see /tmp/mounted_dirs2)"
-  dockerdata_dir=$(find_docker_dir_by_filelist "/tmp/mounted_dirs2")
+# --- main ---
+
+if [ -z "$mark_dir" ]; then
+  logger -p local0.info -s "predocker.sh: Data dir was not set, now searching mounted devices (see /tmp/mounted_dirs1)"
+  get_mounted_disks
+  data_dir=$(find_data_dir_by_filelist "/tmp/mounted_dirs1")
   ret_val=$?
-  logger -p local0.info "UseMe4DockerData = $dockerdata_dir"
-  echo $dockerdata_dir > /tmp/DockerDataDir
-
-  if [ "$ret_val" -eq "0" ]
-  then
-    patch_dockerd_config $dockerdata_dir
-    conf_startapp_script $dockerdata_dir
-    export DOCKERDATA_DIR=$dockerdata_dir
+  if [ "$ret_val" -eq "0" ]; then
+    setup_all
     exit 0
   fi
 
-  logger -p local0.info -s "Docker dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
+  logger -p local0.info "predocker.sh: trying to mount not yet mounted devices (see /tmp/mounted_dirs2)"
+  mount_not_yet_mounted_disks
+  data_dir=$(find_data_dir_by_filelist "/tmp/mounted_dirs2")
+  ret_val=$?
+  if [ "$ret_val" -eq "0" ]; then
+    setup_all
+    exit 0
+  fi
+
+  logger -p local0.info -s "Data dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
   exit 1
 fi
