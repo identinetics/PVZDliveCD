@@ -12,45 +12,8 @@ Notification Center schlecht gelöst (vor allem wenn eine Message kein Icon hat)
 
 ## Optimierungsziele
 
-### LiveCD GNOME-Problem eliminieren
-schlanke Basis, Freeze Problem eliminieren (Knoppix oder ct Bankix). Default start mit acpi=off,  alternative Konfig „save boot2 anbieten mit noapic nolapic vga=normal). Autoupdates wegkonfigurieren
-
-### UI optimieren, besonders durch verbesserte Status-/Logmeldungen
-
-1. Status monitoring
-2. Launch pad
-3. App-Menü für alternative container
-
-### Sonstiges
-
-Wenn keine Internet-Verbindung vorhanden ist und das gewählt Dockerimage schon geladen ist, soll
-der Schritt `docker pull`übersprungen werden.
-
-## Tasks
-
-1. Status monitoring.
-The start process has several waiting points, and there needs to be user feedback. Logger messages
-are directed to local0, going to /var/log/dockerapp.log. There should be 2 windows:
-(i) tail -f /var/log/dockerapp.log for the ongoing messages
-(ii) Component list with status (blank, started, failed). Can be text (or html with very light-weight browser -  firefox would be too slow on startup)
-The status of following components should be shown:
-a) mount status docker data volume
-b) docker daemon restarted (result of predocker.sh)
-c) internet connection available
-d) docker image available/pulling/not there
-e) docker container starting
-f) pcscd running (from here on only For fVZD client  running in container)
-g) pcscd detected card reader
-h) MOCCA started and
-
-2. Launch pad or menu that will provide following functions:
-- list storage devices, and mark which one has a file named "UseMe4Docker" in the file system root
-- format a device with ext4 and touch a file "UseMe4Docker" (use has to enter device path)
-- restart predocker.sh
-The launch pad should be visible all time
-
-
-3. App-Menu
-Instead of start_app.sh pulling/starting docker right away, the user should be able to
-start an alternative images or no image at all. By default the pvzdclient image shold be started
-after 3s.
+. LiveCD GNOME-Problem eliminieren (issue #6)
+. Skip docker pull if off-line (issue #7)
+. Status monitoring (issue #2)
+. Launch pad (issue #4)
+. App-Menü für alternative container (issue #5)
