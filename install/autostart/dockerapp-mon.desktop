@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=/usr/bin/dbus-launch /usr/bin/lxterminal --hide-menubar -e /usr/local/bin/dockerapp_mon.sh
+Exec=/usr/bin/lxterminal --hide-menubar -e /usr/local/bin/dockerapp_mon.sh
 Hidden=false
 NoDisplay=false
 Terminal=True

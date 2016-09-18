@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=/usr/local/bin/startall_user.sh
+Exec=/usr/local/bin/start.sh
 Hidden=false
 NoDisplay=false
 

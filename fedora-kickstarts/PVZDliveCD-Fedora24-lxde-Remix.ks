@@ -149,6 +149,7 @@ metacity
 -btrfs*
 -ntfs*
 -tigervnc*
+-liveinst*
 
 %end
 
@@ -271,7 +272,7 @@ fi
 # add fedora user with no passwd
 action "Adding live user" useradd \$USERADDARGS -c "Live System User" liveuser
 passwd -d liveuser > /dev/null
-usermod -aG wheel, docker liveuser > /dev/null
+usermod -aG wheel liveuser > /dev/null
 
 # Remove root password lock
 passwd -d root > /dev/null
@@ -303,6 +304,7 @@ systemctl stop atd.service 2> /dev/null || :
 
 # Docker
 systemctl enable docker.service
+systemctl start docker.service
 
 # Don't sync the system clock when running live (RHBZ #1018162)
 sed -i 's/rtcsync//' /etc/chrony.conf
@@ -472,6 +474,9 @@ FOE
 
 # set up auto-login for liveuser
 sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
+
+#add liveuser to docker group
+usermod -aG docker liveuser > /dev/null
 
 #Show Docker scripts on the Desktop
 mkdir /home/liveuser/Desktop
