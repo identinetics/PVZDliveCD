@@ -87,7 +87,7 @@ glibc-all-langpacks
 firefox
 
 #Docker
-docker-utils
+docker
 
 # rebranding
 -fedora-logos
@@ -302,7 +302,7 @@ systemctl stop crond.service 2> /dev/null || :
 systemctl stop atd.service 2> /dev/null || :
 
 # Docker
-systemctl start docker.service
+systemctl enable docker.service
 
 # Don't sync the system clock when running live (RHBZ #1018162)
 sed -i 's/rtcsync//' /etc/chrony.conf
@@ -484,6 +484,9 @@ mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
+
+#Remove Install to disk
+rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
 mkdir -p /home/liveuser/.config/clipit
