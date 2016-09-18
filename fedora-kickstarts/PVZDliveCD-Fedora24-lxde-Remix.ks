@@ -45,9 +45,9 @@ kernel-modules-extra
 
 
 # The point of a live image is to install
-anaconda-tui
+anaconda
 #@anaconda-tools
-system-config-keyboard
+-system-config-keyboard
 
 # Need aajohan-comfortaa-fonts for the SVG rnotes images
 aajohan-comfortaa-fonts
@@ -85,7 +85,7 @@ glibc-all-langpacks
 #@lxde-office
 @networkmanager-submodules
 
-firefox
+midori
 system-config-network
 #Docker
 docker
@@ -309,7 +309,7 @@ systemctl stop atd.service 2> /dev/null || :
 
 # Docker
 systemctl enable docker.service
-systemctl start docker.service
+
 chown root:docker /var/run/docker.socket
 
 # Don't sync the system clock when running live (RHBZ #1018162)
@@ -510,6 +510,10 @@ FOE
 
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser
+
+# Fixing default locale to de
+localectl set-keymap de
+localectl set-x11-keymap de
 
 # restorecon -R /home/liveuser #not needed no SELinux
 

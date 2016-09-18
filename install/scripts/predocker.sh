@@ -47,7 +47,7 @@ function patch_dockerd_config {
   #CentOS 7
   #sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
   #Fedora 24
-  OPTIONS="$OPTIONS -g $dockerdata_dir"
+  OPTIONS="$OPTIONS -g $data_dir"
   systemctl daemon-reload
   systemctl start docker
   logger -p local0.info -s "Docker daemon patched and restarted"
