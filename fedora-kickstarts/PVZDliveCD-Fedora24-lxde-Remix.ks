@@ -154,7 +154,7 @@ metacity
 
 %post
 #Rebranding
-sed -i -e ‘s/Generic release/PVZD Fedora Remix/g’ /etc/fedora-release /etc/issue
+sed -i -e 's/Generic release/PVZD Fedora Remix/g' /etc/fedora-release /etc/issue
 %end
 
 %post
