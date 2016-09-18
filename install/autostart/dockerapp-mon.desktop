@@ -4,6 +4,6 @@ Exec=/usr/bin/dbus-launch /bin/gnome-terminal --hide-menubar -e /usr/local/bin/d
 Hidden=false
 NoDisplay=false
 Terminal=True
-X-GNOME-Autostart-enabled=true
+
 Name[en_US]=DockerAppMonitor
 Name=DockerAppMonitor

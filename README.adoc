@@ -34,9 +34,11 @@ You may either download the image or build it yourself.
 
 ### Download the ISO image
 
+Based on CentOS 7 Gnome
 https://www.test.portalverbund.gv.at/pvzdclient/livecd-centos-7-gnome-docker-pvzdclient-v0_38.iso[livecd-pvzdclient-v0_38]
 
 ### Make the ISO image
+Based on Fedora 24 LXDE
 ####Install build environment
 
     sudo yum install livecd-tools
@@ -82,8 +84,7 @@ https://www.test.portalverbund.gv.at/pvzdclient/livecd-centos-7-gnome-docker-pvz
 
 . Boot selection issues
 - You might not have access to the BIOS settings - check with your admin
-- This LiveCD is not working with UEFI Microsoft Secure Boot. (Need to
-  replace CentOS with Fedora)
+
 
 ## Security Considerations
 - The execution environment (i.e. the hardware to boot the system) must be trusted.
