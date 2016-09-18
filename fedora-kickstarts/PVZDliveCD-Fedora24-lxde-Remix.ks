@@ -1,68 +1,164 @@
+# PVZD-liveCD-Fedora24-lxde-Remix.ks
+#
+# Description:
+# - PVZD Client LiveCD with the light-weight LXDE Desktop Environment
+#
+# Maintainer(s):
+# - Rainer Hörbe <insert mail>
+
 lang de_AT.UTF-8
 keyboard de
-# X11 keyboard set further down
-timezone Europe/Vienna --isUtc
-auth --useshadow --enablemd5
-selinux --permissive
-#selinux --disabled
-#firewall --enabled --service=cockpit  # need to enable for production use
+timezone Europe/Vienna
+auth --useshadow --passalgo=sha512
+selinux --disabled
 firewall --disabled
 xconfig --startxonboot
-part / --size 8192 --fstype ext4
-services --enabled=NetworkManager --disabled=network,sshd
+zerombr
+clearpart --all
+part / --size 5120 --fstype ext4
+services --enabled=NetworkManager,ModemManager --disabled=network,sshd
+network --bootproto=dhcp --device=link --activate
+shutdown
 
-# Root password
-rootpw --iscrypted $6$K2nKf02kVKG68960$OywvoaViphSITuro/liKvCj7Pm/CH/xqzz/lsoXyaKSR1lYf0vHAqSUc483a9MCCBkIwfr/hNMfqwxqVO0OEg1
+repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
+repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
+url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
 
-repo --name=base --baseurl=http://mirror.centos.org/centos/7/os/x86_64/
-repo --name=docker --baseurl=https://yum.dockerproject.org/repo/main/centos/7/
-repo --name=updates --baseurl=http://mirror.centos.org/centos/7/updates/x86_64/
-#repo --name=extras --baseurl=http://mirror.centos.org/centos/7/extras/x86_64/
-
-# SW-configuration between %packages and %end
-%packages --excludedocs
-@base
+%packages
+@base-x
+#@guest-desktop-agents
+#@standard
 @core
-@dial-up
-#@directory-client
-@fonts
-@gnome-desktop
-@guest-agents
-@guest-desktop-agents
+#@fonts
 #@input-methods
-#@internet-browser
-#-@java-platform
-#-@multimedia
-#@network-file-system-client
-#@print-client
-@x11
-#@internet-applications
-#-@office-suite
-#-@remote-desktop-clients
-#@gnome-apps
-# -libvirt
-#-gnome-boxes
-docker-engine
-mc
-#Live install tools
+@dial-up
+#@multimedia
+@hardware-support
+#@printing
+
+# Explicitly specified here:
+# <notting> walters: because otherwise dependency loops cause yum issues.
+kernel
+kernel-modules
+kernel-modules-extra
+
+
+
+# The point of a live image is to install
 anaconda
-system-config-keyboard
-system-config-language
-firefox
-patch
-# For UEFI/Secureboot support
-grub2
+#@anaconda-tools
+-system-config-keyboard
+
+# Need aajohan-comfortaa-fonts for the SVG rnotes images
+aajohan-comfortaa-fonts
+
+# Without this, initramfs generation during live image creation fails: #1242586
+dracut-live
 grub2-efi
+syslinux
 efibootmgr
 shim
+
+# anaconda needs the locales available to run for different locales
+glibc-all-langpacks
+
+# save some space
+-mpage
+-sox
+-hplip
+-numactl
+-isdn4k-utils
+-autofs
+# smartcards won't really work on the livecd.
+-coolkey
+
+
+# scanning takes quite a bit of space :/
+-xsane
+-xsane-gimp
+-sane-backends
+
+### LXDE desktop
+@lxde-desktop
+#@lxde-apps
+#@lxde-media
+#@lxde-office
+@networkmanager-submodules
+
+midori
+system-config-network
+#Docker
+docker
+
+# rebranding
+-fedora-logos
+-fedora-release
+-fedora-release-notes
+generic-release
+generic-logos
+generic-release-notes
+
+# pam-fprint causes a segfault in LXDM when enabled
+-fprintd-pam
+
+
+# LXDE has lxpolkit. Make sure no other authentication agents end up in the spin.
+-polkit-gnome
+-polkit-kde
+
+# make sure xfce4-notifyd is not pulled in
+notification-daemon
+-xfce4-notifyd
+
+# make sure xfwm4 is not pulled in for firstboot
+# https://bugzilla.redhat.com/show_bug.cgi?id=643416
+metacity
+
+
+# dictionaries are big
+-man-pages-*
+-words
+
+# save some space
+-autofs
+-acpid
+-gimp-help
+-desktop-backgrounds-basic
+-realmd                     # only seems to be used in GNOME
+-PackageKit*                # we switched to yumex, so we don't need this
+-foomatic-db-ppds
+-foomatic
+-stix-fonts
+-ibus-typing-booster
+-xscreensaver-extras
+-wqy-zenhei-fonts           # FIXME: Workaround to save space, do this in comps
+
+# drop some system-config things
+-system-config-language
+-system-config-rootpassword
+-system-config-services
+-policycoreutils-gui
+-gnome-disk-utility
+-firewalld
+-firewall*
+-libselinux*
+-selinux*
+-sylpheed
+-wayland*
+-*wayland
+-btrfs*
+-ntfs*
+-tigervnc*
+-liveinst*
+
 %end
 
 %post
-#disable gnome startup screen
-mkdir /etc/skel/.config
-echo "yes" >> /etc/skel/.config/gnome-initial-setup-done
+#Rebranding
+sed -i -e 's/Generic release/PVZD Fedora Remix/g' /etc/fedora-release /etc/issue
+%end
 
-
+%post
 # FIXME: it'd be better to get this installed from a package
 cat > /etc/rc.d/init.d/livesys << EOF
 #!/bin/bash
@@ -72,7 +168,7 @@ cat > /etc/rc.d/init.d/livesys << EOF
 # chkconfig: 345 00 99
 # description: Init script for live image.
 ### BEGIN INIT INFO
-# X-Start-Before: display-manager
+# X-Start-Before: display-manager chronyd
 ### END INIT INFO
 
 . /etc/init.d/functions
@@ -89,9 +185,6 @@ exists() {
     which \$1 >/dev/null 2>&1 || return
     \$*
 }
-
-# Make sure we don't mangle the hardware clock on shutdown
-ln -sf /dev/null /etc/systemd/system/hwclock-save.service
 
 livedir="LiveOS"
 for arg in \`cat /proc/cmdline\` ; do
@@ -172,12 +265,6 @@ if ! strstr "\`cat /proc/cmdline\`" nopersistenthome && [ -n "\$homedev" ] ; the
   action "Mounting persistent /home" mountPersistentHome
 fi
 
-# make it so that we don't do writing to the overlay for things which
-# are just tmpdirs/caches
-mount -t tmpfs -o mode=0755 varcacheyum /var/cache/yum
-mount -t tmpfs vartmp /var/tmp
-[ -x /sbin/restorecon ] && /sbin/restorecon /var/cache/yum /var/tmp >/dev/null 2>&1
-
 if [ -n "\$configdone" ]; then
   exit 0
 fi
@@ -187,15 +274,10 @@ action "Adding live user" useradd \$USERADDARGS -c "Live System User" liveuser
 passwd -d liveuser > /dev/null
 usermod -aG wheel liveuser > /dev/null
 
-#add to docker group
+#create Docker group
+groupadd docker
 usermod -aG docker liveuser > /dev/null
-#usermod -aG wheel,docker liveuser > /dev/null
 
-#setup initial settings for docker 
-#mkdir -p /etc/systemd/system/docker.service.d/
-#touch /etc/systemd/system/docker.service.d/docker.conf
-
-#copy find data storage and modify docker config script
 
 # Remove root password lock
 passwd -d root > /dev/null
@@ -216,7 +298,7 @@ systemctl stop mdmonitor.service 2> /dev/null || :
 systemctl stop mdmonitor-takeover.service 2> /dev/null || :
 
 # don't enable the gnome-settings-daemon packagekit plugin
-gsettings set org.gnome.settings-daemon.plugins.updates active 'false' || :
+gsettings set org.gnome.software download-updates 'false' || :
 
 # don't start cron/at as they tend to spawn things which are
 # disk intensive that are painful on a live image
@@ -225,6 +307,14 @@ systemctl --no-reload disable atd.service 2> /dev/null || :
 systemctl stop crond.service 2> /dev/null || :
 systemctl stop atd.service 2> /dev/null || :
 
+# Docker
+systemctl enable docker.service
+
+chown root:docker /var/run/docker.socket
+
+# Don't sync the system clock when running live (RHBZ #1018162)
+sed -i 's/rtcsync//' /etc/chrony.conf
+
 # Mark things as configured
 touch /.liveimg-configured
 
@@ -232,13 +322,7 @@ touch /.liveimg-configured
 # https://bugzilla.redhat.com/show_bug.cgi?id=679486
 echo "localhost" > /etc/hostname
 
-# Fixing the lang install issue when other lang than English is selected . See http://bugs.centos.org/view.php?id=7217
-/usr/bin/cp /usr/lib/python2.7/site-packages/blivet/size.py /usr/lib/python2.7/site-packages/blivet/size.py.orig
-/usr/bin/sed -i "s#return self.humanReadable()#return self.humanReadable().encode('utf-8')#g" /usr/lib/python2.7/site-packages/blivet/size.py
-
 EOF
-
-
 
 # bah, hal starts way too late
 cat > /etc/rc.d/init.d/livesys-late << EOF
@@ -307,8 +391,12 @@ chmod 755 /etc/rc.d/init.d/livesys-late
 # enable tmpfs for /tmp
 systemctl enable tmp.mount
 
-# enable docker
-#systemctl enable docker.service
+# make it so that we don't do writing to the overlay for things which
+# are just tmpdirs/caches
+# note https://bugzilla.redhat.com/show_bug.cgi?id=1135475
+cat >> /etc/fstab << EOF
+vartmp   /var/tmp    tmpfs   defaults   0  0
+EOF
 
 # work around for poor key import UI in PackageKit
 rm -f /var/lib/rpm/__db*
@@ -323,110 +411,40 @@ rm -f /var/lib/rpm/__db*
 # go ahead and pre-make the man -k cache (#455968)
 /usr/bin/mandb
 
-# save a little bit of space at least...
-rm -f /boot/initramfs*
 # make sure there aren't core files lying around
 rm -f /core*
+
+# remove random seed, the newly installed instance should make it's own
+rm -f /var/lib/systemd/random-seed
 
 # convince readahead not to collect
 # FIXME: for systemd
 
-cat >> /etc/rc.d/init.d/livesys << EOF
+echo 'File created by kickstart. See systemd-update-done.service(8).' \
+    | tee /etc/.updated >/var/.updated
 
-
-# disable updates plugin
-cat >> /usr/share/glib-2.0/schemas/org.gnome.settings-daemon.plugins.updates.gschema.override << FOE
-[org.gnome.settings-daemon.plugins.updates]
-active=false
-FOE
-
-# Show the system-config-keyboard tool on the desktop
-mkdir /home/liveuser/Desktop -p >/dev/null
-cat /usr/share/applications/system-config-keyboard.desktop | sed '/NotShowIn/d' |sed 's/Terminal=false/Terminal=true/' > /home/liveuser/Desktop/system-config-keyboard.desktop
-cat /usr/share/applications/liveinst.desktop | sed '/NoDisplay/d' > /home/liveuser/Desktop/liveinst.desktop
-chmod +x /home/liveuser/Desktop/*.desktop
-chown -R liveuser:liveuser /home/liveuser
-
-# Liveuser face
-if [ -e /usr/share/icons/hicolor/96x96/apps/fedora-logo-icon.png ] ; then
-    cp /usr/share/icons/hicolor/96x96/apps/fedora-logo-icon.png /home/liveuser/.face
-    chown liveuser:liveuser /home/liveuser/.face
-fi
-
-# make the installer show up
-if [ -f /usr/share/applications/liveinst.desktop ]; then
-  # Show harddisk install in shell dash
-  sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop
-  # need to move it to anaconda.desktop to make shell happy
-  #cp /usr/share/applications/liveinst.desktop /usr/share/applications/anaconda.desktop
-fi
-  cat >> /usr/share/glib-2.0/schemas/org.gnome.shell.gschema.override << FOE
-[org.gnome.shell]
-favorite-apps=['liveinst.desktop','firefox.desktop', 'evolution.desktop', 'empathy.desktop', 'rhythmbox.desktop', 'shotwell.desktop', 'libreoffice-writer.desktop', 'nautilus.desktop', 'gnome-documents.desktop', 'anaconda.desktop']
-FOE
-
-
-# set up auto-login
-cat > /etc/gdm/custom.conf << FOE
-[daemon]
-AutomaticLoginEnable=True
-AutomaticLogin=liveuser
-FOE
-
-# Turn off PackageKit-command-not-found while uninstalled
-if [ -f /etc/PackageKit/CommandNotFound.conf ]; then
-  sed -i -e 's/^SoftwareSourceSearch=true/SoftwareSourceSearch=false/' /etc/PackageKit/CommandNotFound.conf
-fi
-
-#mkdir autostart dir
-mkdir -p /home/liveuser/.config/autostart/
-cat > /home/liveuser/.config/autostart/docker-app.desktop << FOE
-[Desktop Entry]
-Type=Application
-Exec=/usr/local/bin/start.sh
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true
-Name[en_US]=DockerApp
-Name=Docker App
-FOE
-
-# make sure to set the right permissions and selinux contexts
-chown -R liveuser:liveuser /home/liveuser/
-restorecon -R /home/liveuser/
-
-# Fixing default locale to de
-localectl set-keymap de
-localectl set-x11-keymap de
-EOF
-
-# rebuild schema cache with any overrides we installed
-glib-compile-schemas /usr/share/glib-2.0/schemas
-
-# update system clock at once
-echo "ntpdate pool.ntp.org &" >> /etc/rc.local
-
-# have a spearate logfile for predocker and the docker app
-echo "local0.*  /var/log/dockerapp.log" >> /etc/rsyslog.conf
-
-# Allow sudo/nopassword to work without tty
-sed -i -e 's/^Defaults\s\+requiretty/#Defaults requiretty/' /etc/sudoers
-
-# remove superfluous packages that come with @Gnome-Desktop
-yum -y remove cheese* empathy evolution* gnome-video-effects libreoffice* rythmbox samba* shotwell
+# Drop the rescue kernel and initramfs, we don't need them on the live media itself.
+# See bug 1317709
+rm -f /boot/*-rescue*
 
 %end
 
 %post --nochroot
+cp $INSTALL_ROOT/usr/share/licenses/*-release/* $LIVE_ROOT/
+
+# only works on x86, x86_64
+if [ "$(uname -i)" = "i386" -o "$(uname -i)" = "x86_64" ]; then
+  if [ ! -d $LIVE_ROOT/LiveOS ]; then mkdir -p $LIVE_ROOT/LiveOS ; fi
+  cp /usr/bin/livecd-iso-to-disk $LIVE_ROOT/LiveOS
+fi
 
 # copy scripts
-
 echo "read CLCDDIR var"
 read CLCDDIR < CLCDDIRvar
 echo "CLCDDIR is $CLCDDIR"
 
 # autostart apps and related scripts
-#cp -p $CLCDDIR/install/autostart/*.desktop /home/liveuser/.config/autostart/
+cp -p $CLCDDIR/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
 cp -ar $CLCDDIR/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
 chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
 
@@ -434,20 +452,71 @@ chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
 cp -ar $CLCDDIR/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
 chown root:root $INSTALL_ROOT/etc/sudoers.d/predocker
 
-# customize grub menu - boot fast, no medium check
-sed -i -e's/set default="1"/set default="0"/' $LIVE_ROOT/EFI/BOOT/grub.cfg
-sed -i -e's/set timeout=10/set timeout=5/g' $LIVE_ROOT/EFI/BOOT/grub.cfg
-sed -i -e's/ quiet//g' $LIVE_ROOT/EFI/BOOT/grub.cfg
+%end
 
-echo "# remove all other labels in $LIVE_ROOT/isolinux/isolinux.cfg"
-#sed -i -e's/timeout 100/timeout 0/g' -e's/ quiet//g' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'/menu default/q' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'$amenu end' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'/vesamenu.c32/d' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'/menu background/d' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'/menu autoboot/d' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'1iprompt 0' $LIVE_ROOT/isolinux/isolinux.cfg
-sed -i -e'2idefault linux0' $LIVE_ROOT/isolinux/isolinux.cfg
+%post
+# LXDE and LXDM configuration
 
+# create /etc/sysconfig/desktop (needed for installation)
+cat > /etc/sysconfig/desktop <<EOF
+PREFERRED=/usr/bin/startlxde
+DISPLAYMANAGER=/usr/sbin/lxdm
+EOF
+
+cat >> /etc/rc.d/init.d/livesys << EOF
+# disable screensaver locking and make sure gamin gets started
+cat > /etc/xdg/lxsession/LXDE/autostart << FOE
+/usr/libexec/gam_server
+@lxpanel --profile LXDE
+@pcmanfm --desktop --profile LXDE
+/usr/libexec/notification-daemon
+FOE
+
+# set up preferred apps
+cat > /etc/xdg/libfm/pref-apps.conf << FOE
+[Preferred Applications]
+WebBrowser=firefox.desktop
+FOE
+
+# set up auto-login for liveuser
+sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
+
+#Show Docker scripts on the Desktop
+mkdir /home/liveuser/Desktop
+cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
+cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
+cp /usr/share/applications/lx-terminal.desktop /home/liveuser/Desktop
+
+#Austart Docker scripts
+mkdir -p /home/liveuser/.config/autostart
+cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
+
+# Show harddisk install on the desktop
+sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
+rm -rf /home/liveuser/Desktop/liveinst.desktop
+
+# create default config for clipit, otherwise it displays a dialog on startup
+mkdir -p /home/liveuser/.config/clipit
+cat > /home/liveuser/.config/clipit/clipitrc  << FOE
+[rc]
+use_copy=true
+save_uris=true
+save_history=false
+statics_show=true
+single_line=true
+FOE
+
+# this goes at the end after all other changes.
+chown -R liveuser:liveuser /home/liveuser
+
+# Fixing default locale to de
+localectl set-keymap de
+localectl set-x11-keymap de
+
+# restorecon -R /home/liveuser #not needed no SELinux
+
+EOF
 
 %end

@@ -2,11 +2,11 @@
 Name=Terminal
 Comment=Use the command line
 Keywords=shell;prompt;command;commandline;
-TryExec=gnome-terminal
-Exec=/usr/bin/gnome-terminal
+TryExec=lxterminal
+Exec=/usr/bin/lxterminal
 Icon=utilities-terminal
 Type=Application
-X-GNOME-SingleWindow=false
-X-GNOME-Autostart-enabled=true
+
 Hidden=false
 NoDisplay=false
+Name[en_US]=lxterminal.desktop

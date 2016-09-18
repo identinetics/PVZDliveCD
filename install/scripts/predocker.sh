@@ -43,8 +43,11 @@ function set_http_proxy_config {
 function patch_dockerd_config {
   dockerdata_dir=$1/docker
   mkdir $dockerdata_dir
-  logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching docker daemon options"
-  sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
+  dockerdata_tmp=$dockerdatadir/tmp
+  mkdir $dockerdata_tmp
+    logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; tmp dir is in $dockerdata_tmp"
+  mount -o bind $dockerdata_tmp /var/lib/docker/tmp
+    logger -p local0.info "predocker.sh: Mounted $dockerdata_tmp to /var/lib/docker/tmp"
   systemctl daemon-reload
   systemctl start docker
   logger -p local0.info -s "Docker daemon patched and restarted"
