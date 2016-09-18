@@ -43,8 +43,11 @@ function set_http_proxy_config {
 function patch_dockerd_config {
   dockerdata_dir=$1/docker
   mkdir $dockerdata_dir
-  logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching docker daemon options"
-  sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
+    logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching docker daemon options"
+  #CentOS 7
+  #sed -i "s~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/~ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
+  #Fedora 24
+  OPTIONS="$OPTIONS -g $dockerdata_dir"
   systemctl daemon-reload
   systemctl start docker
   logger -p local0.info -s "Docker daemon patched and restarted"
