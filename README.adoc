@@ -74,8 +74,8 @@ Based on Fedora 24 LXDE
 - Format the writeable medium with a standard linux filesystem, such as ext4 and mark it with a a file named 'UseMe4DockerData'. E.g.:
 
     // check dmesg for the actual device of your USB flash drive
-    mkfs.vfat /dev/sdb1
-    mount /dev/dsb1  /mnt
+    mkfs.vfat /dev/sdX1
+    mount /dev/sdX1  /mnt
     touch /mnt/UseMe4DockerData
 
 - Insert both media into the PC and connect your smartcard reader. Any PCSC-compliant reader should work.
