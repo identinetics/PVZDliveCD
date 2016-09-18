@@ -43,8 +43,10 @@ function set_http_proxy_config {
 function patch_dockerd_config {
   dockerdata_dir=$1/docker
   mkdir $dockerdata_dir
-  dockerdata_tmp=$dockerdatadir/tmp
+  dockerdata_tmp=$dockerdata_dir/tmp
   mkdir $dockerdata_tmp
+  dockerdata_dm=$dockerdata_dir/devicemapper
+  mkdir $dockerdata_dm
     logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; tmp dir is in $dockerdata_tmp"
   mount -o bind $dockerdata_tmp /var/lib/docker/tmp
     logger -p local0.info "predocker.sh: Mounted $dockerdata_tmp to /var/lib/docker/tmp"
