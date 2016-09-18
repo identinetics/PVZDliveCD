@@ -47,6 +47,7 @@ kernel-modules-extra
 # The point of a live image is to install
 anaconda-tui
 #@anaconda-tools
+system-config-keyboard
 
 # Need aajohan-comfortaa-fonts for the SVG rnotes images
 aajohan-comfortaa-fonts
@@ -85,7 +86,7 @@ glibc-all-langpacks
 @networkmanager-submodules
 
 firefox
-
+system-config-network
 #Docker
 docker
 
@@ -134,7 +135,6 @@ metacity
 
 # drop some system-config things
 -system-config-language
--system-config-network
 -system-config-rootpassword
 -system-config-services
 -policycoreutils-gui
@@ -274,6 +274,11 @@ action "Adding live user" useradd \$USERADDARGS -c "Live System User" liveuser
 passwd -d liveuser > /dev/null
 usermod -aG wheel liveuser > /dev/null
 
+#create Docker group
+groupadd docker
+usermod -aG docker liveuser > /dev/null
+
+
 # Remove root password lock
 passwd -d root > /dev/null
 
@@ -305,6 +310,7 @@ systemctl stop atd.service 2> /dev/null || :
 # Docker
 systemctl enable docker.service
 systemctl start docker.service
+chown root:docker /var/run/docker.socket
 
 # Don't sync the system clock when running live (RHBZ #1018162)
 sed -i 's/rtcsync//' /etc/chrony.conf
@@ -475,9 +481,6 @@ FOE
 # set up auto-login for liveuser
 sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
 
-#add liveuser to docker group
-usermod -aG docker liveuser > /dev/null
-
 #Show Docker scripts on the Desktop
 mkdir /home/liveuser/Desktop
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
@@ -490,7 +493,8 @@ cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
-#Remove Install to disk
+# Show harddisk install on the desktop
+sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
 rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
