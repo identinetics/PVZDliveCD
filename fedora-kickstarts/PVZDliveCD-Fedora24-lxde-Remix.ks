@@ -483,7 +483,7 @@ cp /usr/share/applications/lx-terminal.desktop /home/liveuser/Desktop
 mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
-cp /usr/share/applications/lx-terminal.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
 # create default config for clipit, otherwise it displays a dialog on startup
 mkdir -p /home/liveuser/.config/clipit
