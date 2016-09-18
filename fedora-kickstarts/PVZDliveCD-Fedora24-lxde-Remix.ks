@@ -45,7 +45,7 @@ kernel-modules-extra
 
 
 # The point of a live image is to install
-anaconda
+anaconda-tui
 #@anaconda-tools
 
 # Need aajohan-comfortaa-fonts for the SVG rnotes images
@@ -70,7 +70,7 @@ glibc-all-langpacks
 -autofs
 # smartcards won't really work on the livecd.
 -coolkey
--wget
+
 
 # scanning takes quite a bit of space :/
 -xsane
@@ -146,19 +146,15 @@ metacity
 -sylpheed
 -wayland*
 -*wayland
+-btrfs*
+-ntfs*
+-tigervnc*
 
 %end
 
 %post
 #Rebranding
 sed -i -e ‘s/Generic release/PVZD Fedora Remix/g’ /etc/fedora-release /etc/issue
-%end
-
-%post
-# customize grub menu - boot fast, no medium check
-sed -i -e's/set default="1"/set default="0"/' $LIVE_ROOT/EFI/BOOT/grub.cfg
-sed -i -e's/set timeout=10/set timeout=5/g' $LIVE_ROOT/EFI/BOOT/grub.cfg
-sed -i -e's/ quiet//g' $LIVE_ROOT/EFI/BOOT/grub.cfg
 %end
 
 %post
@@ -440,7 +436,7 @@ read CLCDDIR < CLCDDIRvar
 echo "CLCDDIR is $CLCDDIR"
 
 # autostart apps and related scripts
-cp -p $CLCDDIR/install/autostart/*.desktop /usr/share/applications/
+cp -p $CLCDDIR/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
 cp -ar $CLCDDIR/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
 chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
 
