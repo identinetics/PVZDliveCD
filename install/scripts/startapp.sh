@@ -32,8 +32,8 @@ $sudo docker pull $DOCKER_IMAGE
 notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
 
 logger -p local0.info "mapping container user's home to $DOCKERDATA_DIR"
-$sudo mkdir -p $DOCKERDATA_DIR/home/liveuser/
-$sudo chown -R liveuser:liveuser $DOCKERDATA_DIR/home/liveuser/
+$sudo mkdir -p $DATADIR/home/liveuser/
+$sudo chown -R liveuser:liveuser $DATA_DIR/home/liveuser/
 
 CONTAINERNAME='x11-app'
 
@@ -55,7 +55,7 @@ LOGSETTINGS="--log-driver=syslog --log-opt syslog-facility=local0"
 VOLMAPPING="
     --privileged -v /dev/bus/usb:/dev/bus/usb
     -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
-    -v $DOCKERDATA_DIR/home/liveuser/:/home/liveuser:Z
+    -v $DATA_DIR/home/liveuser/:/home/liveuser:Z
 "
 
 logger -p local0.info "starting docker image $DOCKER_IMAGE"

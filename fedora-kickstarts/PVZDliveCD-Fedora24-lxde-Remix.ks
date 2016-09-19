@@ -20,9 +20,9 @@ services --enabled=NetworkManager,ModemManager --disabled=network,sshd
 network --bootproto=dhcp --device=link --activate
 shutdown
 
-repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-24&arch=$basearch
-repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f24&arch=$basearch
-url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-24&arch=$basearch
+repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
+repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
+url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
 
 %packages
 @base-x
@@ -149,7 +149,7 @@ metacity
 -btrfs*
 -ntfs*
 -tigervnc*
--liveinst*
+
 
 %end
 
@@ -309,6 +309,7 @@ systemctl stop atd.service 2> /dev/null || :
 
 # Docker
 systemctl enable docker.service
+systemctl start docker.service
 
 chown root:docker /var/run/docker.socket
 
@@ -493,9 +494,19 @@ cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
+#Docker Dirty Hack
+systemctl stop docker.service
+mkdir -p /mnt/docker
+sed -i -e 's/# DOCKER_TMPDIR=\/var\/tmp/DOCKER_TMPDIR=\/mnt\/docker\/tmp/' /etc/sysconfig/docker
+sed -i -e "s/OPTIONS='--selinux-enabled --log-driver=journald'/OPTIONS='--log-driver=journald -g \/mnt\/docker'/" /etc/sysconfig/docker
+
+cat >> /etc/sysconfig/docker-storage << FOE
+DOCKER_STORAGE_OPTIONS = --storage-opt dm.metadatadev=/mnt/docker --storage-opt dm.datadev=/mnt/docker
+FOE
+
 # Show harddisk install on the desktop
-sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
-rm -rf /home/liveuser/Desktop/liveinst.desktop
+#sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
+#rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
 mkdir -p /home/liveuser/.config/clipit
