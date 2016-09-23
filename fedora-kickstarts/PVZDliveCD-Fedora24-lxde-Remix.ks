@@ -23,6 +23,7 @@ shutdown
 repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
 repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
 url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
+repo --name=Docker --baseurl https://yum.dockerproject.org/repo/main/fedora/$releasever/
 
 %packages
 @base-x
@@ -88,7 +89,7 @@ glibc-all-langpacks
 midori
 system-config-network
 #Docker
-docker
+docker-engine
 
 # rebranding
 -fedora-logos
@@ -500,9 +501,6 @@ mkdir -p /mnt/docker
 sed -i -e 's/# DOCKER_TMPDIR=\/var\/tmp/DOCKER_TMPDIR=\/mnt\/docker\/tmp/' /etc/sysconfig/docker
 sed -i -e "s/OPTIONS='--selinux-enabled --log-driver=journald'/OPTIONS='--log-driver=journald -g \/mnt\/docker'/" /etc/sysconfig/docker
 
-cat >> /etc/sysconfig/docker-storage << FOE
-DOCKER_STORAGE_OPTIONS = --storage-opt dm.metadatadev=/mnt/docker --storage-opt dm.datadev=/mnt/docker
-FOE
 
 # Show harddisk install on the desktop
 #sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop

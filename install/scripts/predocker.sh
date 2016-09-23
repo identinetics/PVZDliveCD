@@ -43,27 +43,14 @@ function set_http_proxy_config {
 function patch_dockerd_config {
   systemctl stop docker
   dockerdata_dir=$1/docker
-  if [ ! -d "$dockerdata_dir" ]; then
-    mkdir -p $dockerdata_dir
-  fi
-  dockerdata_tmp=$dockerdata_dir/tmp
-  if [ ! -d "$dockerdata_tmp" ]; then
-    mkdir -p $dockerdata_tmp
-    notify-send "Created $dockerdata_tmp" -t 25000
-  fi
-    #dockerdata_dm=$dockerdata_dir/devicemapper
-  #mkdir $dockerdata_dm
-  #  logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; tmp dir is in $dockerdata_tmp"
-  # dirtyhack for Docker
-  mount -o bind $dockerdata_dir /mnt/docker
-    notify-send "mounted $dockerdata_dir" -t 25000
-    logger -p local0.info "predocker.sh: Mounted $dockerdata_dir to /mnt/docker"
-  cp -n /var/lib/docker /mnt/docker
+  mkdir -p $dockerdata_dir
+  logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching docker daemon options"
+  sed -i "s~ExecStart=\/usr\/bin\/dockerd/~ExecStart=\/usr\/bin\/dockerd -g $dockerdata_dir~" /usr/lib/systemd/system/docker.service
   systemctl daemon-reload
-  systemctl start docker.service
+  systemctl start docker
   logger -p local0.info -s "Docker daemon patched and restarted"
 }
-9
+
 function create_exportenv_script {
   data_dir=$1
   logger -p local0.info "setting up export env script"
