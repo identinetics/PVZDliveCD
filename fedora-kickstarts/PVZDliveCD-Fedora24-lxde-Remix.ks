@@ -23,6 +23,7 @@ shutdown
 repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
 repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
 url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
+repo --name=Docker --baseurl https://yum.dockerproject.org/repo/main/fedora/$releasever/
 
 %packages
 @base-x
@@ -88,7 +89,7 @@ glibc-all-langpacks
 midori
 system-config-network
 #Docker
-docker
+docker-engine
 
 # rebranding
 -fedora-logos
@@ -149,7 +150,7 @@ metacity
 -btrfs*
 -ntfs*
 -tigervnc*
--liveinst*
+
 
 %end
 
@@ -309,6 +310,7 @@ systemctl stop atd.service 2> /dev/null || :
 
 # Docker
 systemctl enable docker.service
+systemctl start docker.service
 
 chown root:docker /var/run/docker.socket
 
@@ -492,6 +494,11 @@ mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
+
+#Docker Dirty Hack
+systemctl stop docker.service
+  sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g $dockerdata_dir/" /usr/lib/systemd/system/docker.service
+
 
 # Show harddisk install on the desktop
 sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
