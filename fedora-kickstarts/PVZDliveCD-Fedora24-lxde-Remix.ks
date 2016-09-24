@@ -497,14 +497,12 @@ cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
 #Docker Dirty Hack
 systemctl stop docker.service
-mkdir -p /mnt/docker
-sed -i -e 's/# DOCKER_TMPDIR=\/var\/tmp/DOCKER_TMPDIR=\/mnt\/docker\/tmp/' /etc/sysconfig/docker
-sed -i -e "s/OPTIONS='--selinux-enabled --log-driver=journald'/OPTIONS='--log-driver=journald -g \/mnt\/docker'/" /etc/sysconfig/docker
+  sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g $dockerdata_dir/" /usr/lib/systemd/system/docker.service
 
 
 # Show harddisk install on the desktop
-#sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
-#rm -rf /home/liveuser/Desktop/liveinst.desktop
+sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
+rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
 mkdir -p /home/liveuser/.config/clipit
