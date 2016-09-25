@@ -2,6 +2,18 @@
 
 DOCKER_IMAGE='rhoerbe/pvzd-client-app'
 
+
+wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
+if [[ $? -eq 0 ]]; then
+        echo "Online"
+        notify-send "Online - Preparing download"
+else
+        echo "Offline"
+        notify-send "Offline - Please connect to internet and start this script again"
+        break
+fi
+
+
 runopt='-it'
 while getopts ":hpt" opt; do
   case $opt in
@@ -26,13 +38,13 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
-notify-send "Pulling docker image $DOCKER_IMAGE; please wait" -t 50000
+notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update can be bigger" -t 50000
 logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 $sudo docker pull $DOCKER_IMAGE
 notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
 
 logger -p local0.info "mapping container user's home to $DOCKERDATA_DIR"
-$sudo mkdir -p $DATADIR/home/liveuser/
+$sudo mkdir -p $DATA_DIR/home/liveuser/
 $sudo chown -R liveuser:liveuser $DATA_DIR/home/liveuser/
 
 CONTAINERNAME='x11-app'
