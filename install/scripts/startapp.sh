@@ -38,7 +38,7 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
-notify-send "Pulling docker image $DOCKER_IMAGE; please wait" -t 50000
+notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update can be bigger" -t 50000
 logger -p local0.info "pulling docker image $DOCKER_IMAGE"
 $sudo docker pull $DOCKER_IMAGE
 notify-send "Docker image $DOCKER_IMAGE up-to date; starting container"
