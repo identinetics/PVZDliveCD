@@ -496,8 +496,8 @@ cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostar
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
 #Docker Dirty Hack
-systemctl stop docker.service
-sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \$dockerdata_dir/" /usr/lib/systemd/system/docker.service
+#systemctl stop docker.service
+#sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \$dockerdata_dir/" /usr/lib/systemd/system/docker.service
 
 
 # Show harddisk install on the desktop

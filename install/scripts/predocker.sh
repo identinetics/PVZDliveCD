@@ -45,10 +45,10 @@ function patch_dockerd_config {
   dockerdata_dir=$1/docker
   mkdir -p $dockerdata_dir
   logger -p local0.info "predocker.sh: Docker data dir is $dockerdata_dir; now patching dockerd options"
- sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g $dockerdata_dir/" /usr/lib/systemd/system/docker.service
- systemctl daemon-reload
- systemctl start docker
- # /usr/bin/dockerd -g $dockerdata_dir
+ #sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g $dockerdata_dir/" /usr/lib/systemd/system/docker.service
+ #systemctl daemon-reload
+ #systemctl start docker
+ /usr/bin/dockerd -g $dockerdata_dir
   logger -p local0.info -s "Dockerd patched and restarted"
 }
 
