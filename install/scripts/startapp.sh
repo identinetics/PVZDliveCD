@@ -10,6 +10,7 @@ if [[ $? -eq 0 ]]; then
 else
         echo "Offline"
         notify-send "Offline - Please connect to internet and start this script again"
+        break
 fi
 
 
