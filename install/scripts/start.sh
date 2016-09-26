@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # format debug output if using bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
