@@ -48,6 +48,7 @@ function patch_dockerd_config {
   notify-send "predocker.sh: Docker data dir is $dockerdata_dir; now patching dockerd options"
  #sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g $dockerdata_dir/" /usr/lib/systemd/system/docker.service
  mount -o bind $dockerdata_dir /mnt/docker
+ #setfacl -R -dm g:docker:rwx /mnt/docker
  systemctl daemon-reload
  systemctl start docker
  #/usr/bin/dockerd -g $dockerdata_dir

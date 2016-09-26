@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-tail -f /var/log/dockerapp.log
+journalctl --follow -u docker.service
