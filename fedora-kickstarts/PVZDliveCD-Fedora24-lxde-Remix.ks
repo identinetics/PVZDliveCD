@@ -487,13 +487,13 @@ sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
 mkdir -p /home/liveuser/Desktop
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
-cp /usr/share/applications/lx-terminal.desktop /home/liveuser/Desktop
+cp /usr/share/applications/lxterminal.desktop /home/liveuser/Desktop
 
 #Austart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
-#cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
-#cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
 #Docker Dirty Hack
 systemctl stop docker.service
