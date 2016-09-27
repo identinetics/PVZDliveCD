@@ -90,6 +90,7 @@ midori
 system-config-network
 #Docker
 docker-engine
+nload
 
 # rebranding
 -fedora-logos
