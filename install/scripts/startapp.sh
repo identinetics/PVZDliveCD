@@ -74,6 +74,10 @@ $sudo docker run $runopt --rm \
      $ENVSETTINGS $LOGSETTINGS $VOLMAPPING \
      $DOCKER_IMAGE
 
+logger -p local0.info "starting Terminal for $DOCKER_IMAGE"
+notify-send "starting Terminal for $DOCKER_IMAGE"
+/bin/lxterminal -T Docker-Container-Terminal -e /usr/local/bin/dockerterminal.sh
+
 #else
 #        echo "Not pulling docker image - OFFLINE"
 #        notify-send "Not pulling docker image - OFFLINE"
