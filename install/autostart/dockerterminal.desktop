@@ -2,8 +2,7 @@
 Name=DockerTerminal
 Comment=Use the docker command line
 Keywords=shell;prompt;command;commandline;
-TryExec=lxterminal
-Exec=Exec=/bin/lxterminal -T Docker-Container-Terminal -e /usr/local/bin/dockerterminal.sh
+Exec=/bin/lxterminal -T Docker-Container-Terminal -e /usr/local/bin/dockerterminal.sh
 Icon=utilities-terminal
 Type=Application
 

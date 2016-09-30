@@ -152,6 +152,9 @@ metacity
 -ntfs*
 -tigervnc*
 
+#Fonts
+liberation-mono-fonts
+
 
 %end
 
@@ -503,11 +506,11 @@ mkdir -p /mnt/docker
 sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
 
 #Terminal hide menubar
-sed -i -e 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
+sed -i 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
 
 
 # Show harddisk install on the desktop
-sed -i -e 's/NoDisplay=false/NoDisplay=true/' /usr/share/applications/liveinst.desktop
+sed -i 's/NoDisplay=false/NoDisplay=true/' /usr/share/applications/liveinst.desktop
 #rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
