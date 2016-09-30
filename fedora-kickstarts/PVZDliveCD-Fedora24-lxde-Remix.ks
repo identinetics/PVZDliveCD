@@ -88,9 +88,12 @@ glibc-all-langpacks
 
 midori
 system-config-network
+
 #Docker
 docker-engine
 nload
+wget
+coreutils-single
 
 # rebranding
 -fedora-logos

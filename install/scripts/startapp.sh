@@ -44,7 +44,9 @@ function run_docker_container {
         $sudo docker rm $CONTAINERNAME
     fi
 
-    $datadir/checkcontainerup.sh
+
+    $DATADIR/checkcontainerup.sh &
+
 
     ENVSETTINGS="
         -e DISPLAY=$DISPLAY
@@ -54,7 +56,7 @@ function run_docker_container {
         -e HTTPS_PROXY=$HTTPS_PROXY
         -e no_proxy=$no_proxy
     "
-    LOGSETTINGS='--log-driver=journald --log-opt tag="local0" --log-level=warning'
+    LOGSETTINGS='--log-driver=journald --log-opt tag="local0" '
     VOLMAPPING="
         --privileged -v /dev/bus/usb:/dev/bus/usb
         -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
@@ -66,11 +68,11 @@ function run_docker_container {
     $sudo docker run $runopt --rm \
         --hostname=$CONTAINERNAME --name=$CONTAINERNAME \
         $ENVSETTINGS $LOGSETTINGS $VOLMAPPING \
-        $DOCKER_IMAGE
+        $DOCKER_IMAGE 
 }
 
 function get_latest_docker {
-    notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update has several 100MB " -t 50000
+    notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
     $sudo docker pull $DOCKER_IMAGE
     notify-send "Docker image $DOCKER_IMAGE is up to date"
@@ -85,9 +87,17 @@ function check_online_status_no_image {
            logger -p local0.info -t "local0" "Online prepareing download"
            get_latest_docker
     else
-        echo "Not pulling docker image - OFFLINE"
-        notify-send "Not pulling docker image - OFFLINE"
-        logger -p local0.info -t "local0" -s "Not pulling docker image - OFFLINE"
+        for i in {4..0}; do
+            wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
+            if [[ $? -eq 0 ]]; then
+                get_latest_docker
+                break
+            else
+                zenity --error --text "No Internet connection detected! ($i tries left)- please connect to download docker image)"
+                notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image"
+                logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
+            fi
+        done
     fi
 }
 
@@ -107,6 +117,7 @@ function check_online_status {
         fi
 
     else
+        zenity --info --text "Not checking for  docker image update - OFFLINE"
         notify-send "Not checking for  docker image update - OFFLINE"
         logger -p local0.info -t "local0" "Not checking for  docker image update - OFFLINE"
         run_docker_container
