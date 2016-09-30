@@ -35,7 +35,7 @@ You may either download the image or build it yourself.
 ### Download the ISO image
 
 Based on CentOS 7 Gnome
-https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_44.iso[livecd-pvzdclient-v0_44]
+https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_49.iso[livecd-pvzdclient-v0_49]
 
 ### Make the ISO image
 Based on Fedora 24 LXDE
