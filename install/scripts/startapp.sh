@@ -72,7 +72,7 @@ function run_docker_container {
 }
 
 function get_latest_docker {
-    notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update has several 100MB " -t 50000
+    notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
     $sudo docker pull $DOCKER_IMAGE
     notify-send "Docker image $DOCKER_IMAGE is up to date"
@@ -90,7 +90,7 @@ function check_online_status_no_image {
         for i in {4..0}; do
             wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
             if [[ $? -eq 0 ]]; then
-
+                get_latest_docker
                 break
             else
                 zenity --error --text "No Internet connection detected! ($i tries left)- please connect to download docker image)"
