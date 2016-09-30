@@ -317,7 +317,6 @@ systemctl stop atd.service 2> /dev/null || :
 
 # Docker
 systemctl enable docker.service
-systemctl start docker.service
 
 chown root:docker /var/run/docker.socket
 
@@ -456,6 +455,9 @@ echo "CLCDDIR is $CLCDDIR"
 cp -p $CLCDDIR/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
 cp -ar $CLCDDIR/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
 chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
+mkdir -p $INSTALL_ROOT/usr/local/doc
+mkdir -p $INSTALL_ROOT/usr/local/doc/pvzd
+cp -p $CLCDDIR/install/doc/lxterminal.conf $INSTALL_ROOT/usr/local/doc/pvzd/
 
 #copy sudoers file
 cp -ar $CLCDDIR/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
@@ -494,27 +496,23 @@ sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
 mkdir -p /home/liveuser/Desktop
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
-cp /usr/share/applications/lxterminal.desktop /home/liveuser/Desktop
+#cp /usr/share/applications/lxterminal.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerterminal.desktop /home/liveuser/Desktop
 
 #Austart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
-cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
-
-#Docker
-systemctl stop docker.service
-mkdir -p /mnt/docker
-sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
+#cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
 #Terminal hide menubar
-sed -i 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
+mkdir -p /home/liveuser/.config/lxterminal
+cp -p /usr/local/doc/pvzd/lxterminal.conf /home/liveuser/.config/lxterminal/
 
 
-# Show harddisk install on the desktop
-sed -i 's/NoDisplay=false/NoDisplay=true/' /usr/share/applications/liveinst.desktop
-#rm -rf /home/liveuser/Desktop/liveinst.desktop
+#Docker
+mkdir -p /mnt/docker
+sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
 
 # create default config for clipit, otherwise it displays a dialog on startup
 mkdir -p /home/liveuser/.config/clipit

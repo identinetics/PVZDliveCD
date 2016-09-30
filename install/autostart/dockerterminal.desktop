@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=DockerTerminal
-Comment=Use the docker command line
+Name=DockerAppTerminal
+Comment=Use the docker app command line
 Keywords=shell;prompt;command;commandline;
-Exec=/bin/lxterminal -T Docker-Container-Terminal -e /usr/local/bin/dockerterminal.sh
+Exec=/bin/lxterminal -T PVZDclient-Terminal --geometry=120x30 -e /usr/local/bin/dockerterminal.sh
 Icon=utilities-terminal
 Type=Application
 
