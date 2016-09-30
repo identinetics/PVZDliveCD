@@ -1,13 +1,13 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # format debug output if using bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 notify-send "Looking for Data medium" -t 25000
-logger -p local0.info "Looking for Docker data medium"
+logger -p local0.info -t  "local0"  "Looking for Docker data medium"
 sleep 3
 notify-send "waiting for auto-mounting of block devices to complete" -t 25000
-logger -p local0.info "waiting for auto-mounting of block devices to complete"
+logger -p local0.info -t "local0" "waiting for auto-mounting of block devices to complete"
 sleep 3
 for i in {4..0}; do
   sudo /usr/local/bin/predocker.sh >> /tmp/predocker.log 2>&1

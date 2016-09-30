@@ -90,6 +90,7 @@ midori
 system-config-network
 #Docker
 docker-engine
+nload
 
 # rebranding
 -fedora-logos
@@ -150,6 +151,9 @@ metacity
 -btrfs*
 -ntfs*
 -tigervnc*
+
+#Fonts
+liberation-mono-fonts
 
 
 %end
@@ -488,6 +492,7 @@ mkdir -p /home/liveuser/Desktop
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/Desktop
+cp /usr/share/applications/dockerterminal.desktop /home/liveuser/Desktop
 
 #Austart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
@@ -495,15 +500,17 @@ cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
-#Docker Dirty Hack
+#Docker
 systemctl stop docker.service
 mkdir -p /mnt/docker
 sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
 
+#Terminal hide menubar
+sed -i 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
 
 
 # Show harddisk install on the desktop
-#sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
+sed -i 's/NoDisplay=false/NoDisplay=true/' /usr/share/applications/liveinst.desktop
 #rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
@@ -516,6 +523,7 @@ save_history=false
 statics_show=true
 single_line=true
 FOE
+
 
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser

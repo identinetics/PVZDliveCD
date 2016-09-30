@@ -1,3 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 
-journalctl --follow -u docker.service
+if [ $(id -u) -ne 0 ]; then
+    sudo="sudo"
+fi
+
+
+$sudo journalctl --follow -t "local0"
