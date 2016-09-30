@@ -88,8 +88,12 @@ glibc-all-langpacks
 
 midori
 system-config-network
+
 #Docker
 docker-engine
+nload
+wget
+coreutils-single
 
 # rebranding
 -fedora-logos
@@ -150,6 +154,9 @@ metacity
 -btrfs*
 -ntfs*
 -tigervnc*
+
+#Fonts
+liberation-mono-fonts
 
 
 %end
@@ -484,10 +491,11 @@ FOE
 sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
 
 #Show Docker scripts on the Desktop
-mkdir /home/liveuser/Desktop
+mkdir -p /home/liveuser/Desktop
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
-cp /usr/share/applications/lx-terminal.desktop /home/liveuser/Desktop
+cp /usr/share/applications/lxterminal.desktop /home/liveuser/Desktop
+cp /usr/share/applications/dockerterminal.desktop /home/liveuser/Desktop
 
 #Austart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
@@ -495,14 +503,18 @@ cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
-#Docker Dirty Hack
-#systemctl stop docker.service
-sed -i "s/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker/" /usr/lib/systemd/system/docker.service
+#Docker
+systemctl stop docker.service
+mkdir -p /mnt/docker
+sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
+
+#Terminal hide menubar
+sed -i 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
 
 
 # Show harddisk install on the desktop
-sed -i -e 's/NoDisplay=.*/NoDisplay=true/' /usr/share/applications/liveinst.desktop
-rm -rf /home/liveuser/Desktop/liveinst.desktop
+sed -i 's/NoDisplay=false/NoDisplay=true/' /usr/share/applications/liveinst.desktop
+#rm -rf /home/liveuser/Desktop/liveinst.desktop
 
 # create default config for clipit, otherwise it displays a dialog on startup
 mkdir -p /home/liveuser/.config/clipit
@@ -514,6 +526,7 @@ save_history=false
 statics_show=true
 single_line=true
 FOE
+
 
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser
