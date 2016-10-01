@@ -11,10 +11,10 @@
 - Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../aREADME.adoc[README])
 - Das Daten-Medium wird mit einem Linux Filesystem, z.B. ext4 formatiert. Um es erkennbar zu machen,
   wird es im Wurzelverzeichnis mit der (leeren) Datei 'UseMe4DockerData' markiert. Das kann zum Beispiel wie folgt
-  gemacht werden. Zuerst stellt man den Device-PFad fest, etwa mit `dmesg | tail`, gleich nachdem der USB flash drive
-  eingesteckt wird, oder mit `df -hT` wenn man die Devices anhand anderer Merkmale unterscheiden kann. Wenn das Medium
+  gemacht werden. Zuerst stellt man den Device-PFad fest, etwa mit 'dmesg | tail', gleich nachdem der USB flash drive
+  eingesteckt wird, oder mit 'df -hT' wenn man die Devices anhand anderer Merkmale unterscheiden kann. Wenn das Medium
   unter /dev/sdb1 gelistet wird, kann es mit folgenden Befehlen im Terminal eingerichtet werden:
-    
+
     mkfs.ext4 /dev/sdb1
     mount /dev/sdb1  /mnt
     touch /mnt/UseMe4DockerData
@@ -37,5 +37,6 @@
 - Der Download wird nicht automatisch angezeigt, kann aber erkannt werden, wenn die letzte Meldung
   in /var/log/dockerapp.log "pulling docker image" enthält
 - Die weiteren Schritt des Starts sind in der Anwendungsdoku enthalten
-- Um die App neu zu starten, ruft am im Terminal `/usr/local/bin/start.sh' auf. Oder man bootet wieder.
+- Um die App neu zu starten, doppelklick auf die DockerApp am Desktop, oder man ruft am im Terminal
+  '/usr/local/bin/start.sh' auf.
 

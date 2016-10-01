@@ -74,31 +74,23 @@ function run_docker_container {
 function get_latest_docker {
     notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
-    $sudo docker pull $DOCKER_IMAGE
+    $sudo docker pull $DOCKER_IMAGE | tee >(logger -p local0.info -t "local0")
     notify-send "Docker image $DOCKER_IMAGE is up to date"
     run_docker_container
 }
 
 function check_online_status_no_image {
-    wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
-    if [[ $? -eq 0 ]]; then
-           echo "Online"
-           notify-send "Online - Preparing download"
-           logger -p local0.info -t "local0" "Online prepareing download"
-           get_latest_docker
-    else
-        for i in {4..0}; do
-            wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
-            if [[ $? -eq 0 ]]; then
-                get_latest_docker
-                break
-            else
-                zenity --error --text "No Internet connection detected! ($i tries left)- please connect to download docker image)"
-                notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image"
-                logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
-            fi
-        done
-    fi
+    for i in {4..0}; do
+        wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
+        if [[ $? -eq 0 ]]; then
+            get_latest_docker
+            break
+        else
+            zenity --error --text "No Internet connection detected! ($i tries left)- please connect to download docker image)"
+            notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image"
+            logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
+        fi
+    done
 }
 
 function check_online_status {

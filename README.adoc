@@ -2,7 +2,7 @@
 
 ## Purpose
 This is a secure boot environment for X11-applications deployed via docker.
-The CentOS 7 Live CD comes with a GNOME desktop an is booting automatically 
+The PVZD Live CD comes with a LXDE desktop based on Fedora 24 and is booting automatically
 into a predefined docker image. Docker data and the container user's home 
 are stored on a device with a writeable filesystem. The device is tagged 
 with a filename in the root directory for auto-discovery at boot time.
@@ -14,8 +14,8 @@ There are currently 2 docker images supporting this LiveCD:
 
 ## Concept
 
-* Booting the LiveCD will bring up the Gnome desktop for user livecd. 
-* Gnome has an autostart item to execute /usr/local/bin/start.sh. 
+* Booting the LiveCD will bring up the PVZD LXDE desktop for user livecd.
+* LXDE has an autostart item to execute /usr/local/bin/start.sh.
 * start.sh will do 2 steps: 
  ** Execute 'predocker.sh'. This script has following tasks:
  *** Search the writeable filesystem to be used for storing docker data 
@@ -34,14 +34,16 @@ You may either download the image or build it yourself.
 
 ### Download the ISO image
 
-Based on CentOS 7 Gnome
+Based on Fedora 24 LXDE Spin
 https://www.test.portalverbund.gv.at/pvzdclient/livecd-centos-7-gnome-docker-pvzdclient-v0_38.iso[livecd-pvzdclient-v0_38]
 
 ### Make the ISO image
-Based on Fedora 24 LXDE
-####Install build environment
+Based on Fedora 24 LXDE Spin
 
-    sudo yum install livecd-tools
+####Install build environment
+* Fedora 24 required
+
+    sudo dnf install livecd-tools
     cd <path to contain project>
     git clone identinetics/PVZDliveCD
     cd PVZDliveCD
@@ -54,14 +56,26 @@ Based on Fedora 24 LXDE
 - Set the DOCKER_IMAGE to be executed in install/scripts/startapp.sh
 - Build the ISO image:
 
-    sudo livecd-creator -d -v  -c sig-core-livemedia/centos-7-live-gnome-docker.cfg --cache=$PROJ_HOME/livecache/ --nocleanup
+* before you run the build.sh ensure your SELinux is permissive
+
+    sudo sestatus
+* If the output on Current mode: is enforcing
+    sudo setenforce permissive
+
+Then run the build.sh in <path to contain project>
+    sh build.sh
+
+Get a tee or two, it takes some time
+
+After the build is finished, don't forget to enable your SELinux again
+    sudo setenforce targeted
 
 ### Copy to boot device
 - Copy the ISO image to your boot device (DVD or USB Flash >= 1GB), e.g. like this:
 
     // insert USB-stick into hardware
     dmesg | tail  # checl the the device name of the USB-drive
-    dd if=livecd-centos-7-gnome-docker-<imageid>.iso of=/dev/<usb-drive>
+    dd if=livecd-PVZDliveCD-Fedora24-lxde-Remix-<imageid>.iso of=/dev/<usb-drive>
 
     // or like this on OSX (dd dead slow if not using rdisk; block size needs lowercase m):
     sudo dd bs=1m if=livecd-centos-7-gnome-docker-pvzdclient-v0_32.iso  of=/dev/rdisk2
@@ -99,5 +113,7 @@ Based on Fedora 24 LXDE
   one is on rebooting the system.
 
 ## Monitoring
-- script messages go to /var/log/dockerapp.log
-- docker message go to  /tmp/startapp_inv.log
+- script messages go to journald and are printed on the DockerAppMonitor
+- docker error messages go to journald and are printed on the DockerAppMonitor
+- docker info and warning messages can be tracked in terminal with
+    journalctl -f -u docker.service
