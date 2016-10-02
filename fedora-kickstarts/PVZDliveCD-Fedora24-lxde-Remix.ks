@@ -43,9 +43,6 @@ kernel
 kernel-modules
 kernel-modules-extra
 
-
-
-# The point of a live image is to install
 anaconda
 #@anaconda-tools
 -system-config-keyboard
@@ -70,9 +67,9 @@ glibc-all-langpacks
 -numactl
 -isdn4k-utils
 -autofs
+
 # smartcards won't really work on the livecd.
 -coolkey
-
 
 # scanning takes quite a bit of space :/
 -xsane
@@ -249,7 +246,7 @@ mountPersistentHome() {
   # if we have /home under what's passed for persistent home, then
   # we should make that the real /home.  useful for mtd device on olpc
   if [ -d /home/home ]; then mount --bind /home/home /home ; fi
-  [ -x /sbin/restorecon ] && /sbin/restorecon /home
+ # [ -x /sbin/restorecon ] && /sbin/restorecon /home
   if [ -d /home/liveuser ]; then USERADDARGS="-M" ; fi
 }
 
@@ -286,7 +283,6 @@ usermod -aG wheel liveuser > /dev/null
 groupadd docker
 usermod -aG docker liveuser > /dev/null
 
-
 # Remove root password lock
 passwd -d root > /dev/null
 
@@ -317,7 +313,6 @@ systemctl stop atd.service 2> /dev/null || :
 
 # Docker
 systemctl enable docker.service
-
 chown root:docker /var/run/docker.socket
 
 # Don't sync the system clock when running live (RHBZ #1018162)
@@ -389,11 +384,11 @@ fi
 EOF
 
 chmod 755 /etc/rc.d/init.d/livesys
-/sbin/restorecon /etc/rc.d/init.d/livesys
+#/sbin/restorecon /etc/rc.d/init.d/livesys
 /sbin/chkconfig --add livesys
 
 chmod 755 /etc/rc.d/init.d/livesys-late
-/sbin/restorecon /etc/rc.d/init.d/livesys-late
+#/sbin/restorecon /etc/rc.d/init.d/livesys-late
 /sbin/chkconfig --add livesys-late
 
 # enable tmpfs for /tmp
@@ -417,7 +412,7 @@ rpm -qa
 rm -f /var/lib/rpm/__db*
 
 # go ahead and pre-make the man -k cache (#455968)
-/usr/bin/mandb
+#/usr/bin/mandb
 
 # make sure there aren't core files lying around
 rm -f /core*
@@ -491,6 +486,7 @@ FOE
 
 # set up auto-login for liveuser
 sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
+rm -rf /usr/share/applications/liveinst.desktop
 
 #Show Docker scripts on the Desktop
 mkdir -p /home/liveuser/Desktop
@@ -505,10 +501,12 @@ cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 #cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 
-#Terminal hide menubar
+##Terminal hide menubar
 mkdir -p /home/liveuser/.config/lxterminal
 cp -p /usr/local/doc/pvzd/lxterminal.conf /home/liveuser/.config/lxterminal/
-
+##sed doesn't work here
+#sed -i 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
+#sed -i 's/fontname=.*/fontname=Liberation\ Mono\ 10/' /home/liveuser/.config/lxterminal/lxterminal.conf
 
 #Docker
 mkdir -p /mnt/docker
@@ -524,6 +522,8 @@ save_history=false
 statics_show=true
 single_line=true
 FOE
+
+rm -rf /home/liveuser/desktop/liveinst.desktop
 
 
 # this goes at the end after all other changes.
