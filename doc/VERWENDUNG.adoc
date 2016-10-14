@@ -27,6 +27,7 @@
   ist möglich, indem die Datei set_httpproxy.sh im Daten-Medium angepasst wird.
   Ein Template wird beim ersten Start an die Stelle kopiert.
 
+    source /tmp/set_data_dir.sh
     gedit $DATADIR/set_httpproxy_settings.sh
 
 ### Start
