@@ -27,12 +27,11 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
-function create_export_containername_script {
-    [[ "$DOCKER_IMAGE" =~ /(.+)$ ]] &&  CONTAINERNAME=${BASH_REMATCH[1]}
-    logger -p local0.info -t "local0" "setting up export containername script"
-    echo '#!/bin/bash' > /tmp/set_containername.sh
-    echo "export CONTAINERNAME=$CONTAINERNAME" >> /tmp/set_containername.sh
-}
+[[ "$DOCKER_IMAGE" =~ /(.+)$ ]] &&  CONTAINERNAME=${BASH_REMATCH[1]}
+logger -p local0.info -t "local0" "setting up export containername script"
+echo '#!/bin/bash' > /tmp/set_containername.sh
+echo "export CONTAINERNAME=$CONTAINERNAME" >> /tmp/set_containername.sh
+
 
 function run_docker_container {
     notify-send "Docker image $DOCKER_IMAGE found; starting container"
@@ -80,7 +79,7 @@ function run_docker_container {
 function get_latest_docker {
     notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
-    $sudo docker pull $DOCKER_IMAGE | tee >(logger -p local0.info -t "local0")
+    $sudo docker pull $DOCKER_IMAGE
     notify-send "Docker image $DOCKER_IMAGE is up to date"
     run_docker_container
 }
@@ -106,11 +105,13 @@ function check_online_status {
         logger -p local0.info -t "local0" "Online prepareing download"
         #Checking if Docker image is up to date
         DOCKER_LATEST="'wget -qO- http://$REGISTRY/v1/repositories/$DOCKER_IMAGE/tags'"
-        DOCKER_LATEST='echo $LATEST | sed "s/{//g" | sed "s/}//g" | sed "s/\"//g" | cut -d ' ' -f2'
+        DOCKER_LATEST='echo $DOCKER_LATEST | sed "s/{//g" | sed "s/}//g" | sed "s/\"//g" | cut -d ' ' -f2'
         DOCKER_RUNNING='$sudo docker inspect "$REGISTRY/$DOCKER_IMAGE" | grep Id | sed "s/\"//g" | sed "s/,//g" |  tr -s ' ' | cut -d ' ' -f3'
         if [ "$DOCKER_RUNNING" == "$DOCKER_LATEST" ];then
+
             run_docker_container
         else
+
             get_latest_docker
         fi
 
@@ -123,9 +124,10 @@ function check_online_status {
 }
 
 
+
+
 #Check if docker image exists
 IMAGE=$($sudo docker images | grep $DOCKER_IMAGE |  awk '{print $3}')
-create_export_containername_script
 if [[ -z $IMAGE ]]; then
     check_online_status_no_image
     logger -p local0.info -t "local0" "No local Docker image $DOCKER_IMAGE found"
