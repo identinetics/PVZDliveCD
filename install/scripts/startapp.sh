@@ -79,7 +79,7 @@ function run_docker_container {
 function get_latest_docker {
     notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
-    $sudo docker pull $DOCKER_IMAGE | tee>(logger -t "local0")
+    $sudo docker pull $DOCKER_IMAGE | tee >(logger -t "local0")
     notify-send "Docker image $DOCKER_IMAGE is up to date"
     run_docker_container
 }
@@ -104,16 +104,15 @@ function check_online_status {
         notify-send "Online - Preparing download"
         logger -p local0.info -t "local0" "Online prepareing download"
         #Checking if Docker image is up to date
-        DOCKER_LATEST="'wget -qO- http://$REGISTRY/v1/repositories/$DOCKER_IMAGE/tags'"
-        DOCKER_LATEST='echo $DOCKER_LATEST | sed "s/{//g" | sed "s/}//g" | sed "s/\"//g" | cut -d ' ' -f2'
-        DOCKER_RUNNING='$sudo docker inspect "$REGISTRY/$DOCKER_IMAGE" | grep Id | sed "s/\"//g" | sed "s/,//g" |  tr -s ' ' | cut -d ' ' -f3'
-        if [ "$DOCKER_RUNNING" == "$DOCKER_LATEST" ];then
-
-            run_docker_container
-        else
-
+        #DOCKER_LATEST="'wget -qO- http://$REGISTRY/v1/repositories/$DOCKER_IMAGE/tags'"
+        #echo $DOCKER_LATEST
+        #DOCKER_LATEST='echo $DOCKER_LATEST | sed "s/{//g" | sed "s/}//g" | sed "s/\"//g" | cut -d ' ' -f2'
+        #DOCKER_RUNNING='$sudo docker inspect "$REGISTRY/$DOCKER_IMAGE" | grep Id | sed "s/\"//g" | sed "s/,//g" |  tr -s ' ' | cut -d ' ' -f3'
+        #if [ "$DOCKER_RUNNING" == "$DOCKER_LATEST" ];then
+         #   run_docker_container
+        #else
             get_latest_docker
-        fi
+        #fi
 
     else
         zenity --info --text "Not checking for  docker image update - OFFLINE"

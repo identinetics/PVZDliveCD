@@ -36,6 +36,7 @@ repo --name=Docker --baseurl https://yum.dockerproject.org/repo/main/fedora/$rel
 #@multimedia
 @hardware-support
 #@printing
+coreutils-single
 
 # Explicitly specified here:
 # <notting> walters: because otherwise dependency loops cause yum issues.
@@ -90,7 +91,7 @@ system-config-network
 docker-engine
 nload
 wget
-coreutils-single
+
 
 # rebranding
 -fedora-logos

@@ -13,9 +13,25 @@ for i in {4..0}; do
   sudo /usr/local/bin/predocker.sh >> /tmp/predocker.log 2>&1
   retval=$?
   if [ $retval -eq 0 ]; then
+
     break
   else
-    zenity --error --text "Data medium not found ($i tries left)- please insert/mount a marked data medium (see doc)"
+    zenity --error --text "If you have an initialized medium, please insert it, wait approximately 3 Seconds and press OK.
+
+        If you don't have a an initialized medium, follow these steps:
+        a) unplug your medium (USB Flash drive) if it is connected
+        b) open a terminal (from the menu or the 3rd icon from left on the bottom task bar
+        c) plug in medium
+        d) Identify the device number of the medium
+           dmesg|tail -15|egrep '(Product|Manufact|)'
+        e) Identify the device path
+           lsblk --scsi --path
+        f) initialize it:
+           umount /device/path
+           mkfs.ext4 /device/path
+           mount /device/path /mnt
+           touch /mnt/UseMe4DockerData
+        g) press OK" --title "Data medium not found ($i tries left)"
   fi
 done
 
