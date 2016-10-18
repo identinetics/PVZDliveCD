@@ -4,7 +4,8 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
-CONTAINERNAME='x11-app'
+source /tmp/set_containername.sh
+
 CONTAINER_IS_UP=$($sudo docker inspect -f {{.State.Running}} $CONTAINERNAME 2>/dev/null)
 counter=0
 

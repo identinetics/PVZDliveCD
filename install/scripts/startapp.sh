@@ -27,6 +27,12 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
+function create_export_containername_script {
+    [[ "$DOCKER_IMAGE" =~ /(.+)$ ]] &&  CONTAINERNAME=${BASH_REMATCH[1]}
+    logger -p local0.info -t "local0" "setting up export containername script"
+    echo '#!/bin/bash' > /tmp/set_containername.sh
+    echo "export CONTAINERNAME=$CONTAINERNAME" >> /tmp/set_containername.sh
+}
 
 function run_docker_container {
     notify-send "Docker image $DOCKER_IMAGE found; starting container"
@@ -36,7 +42,7 @@ function run_docker_container {
     $sudo mkdir -p $DATADIR/home/liveuser/
     $sudo chown -R liveuser:liveuser $DATADIR/home/liveuser/
 
-    [[ "$DOCKER_IMAGE" =~ /(.+)$ ]] &&  CONTAINERNAME=${BASH_REMATCH[1]}
+
 
     # remove dangling container
     if $sudo docker ps -a | grep $CONTAINERNAME > /dev/null; then
@@ -86,7 +92,7 @@ function check_online_status_no_image {
             get_latest_docker
             break
         else
-            zenity --error --text "No Internet connection detected! ($i tries left)- please connect to download docker image)"
+            zenity --error --text "No Internet connection detected! ($i tries left)- please connect or set http_proxy to download docker image)"
             notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image"
             logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
         fi
@@ -119,6 +125,7 @@ function check_online_status {
 
 #Check if docker image exists
 IMAGE=$($sudo docker images | grep $DOCKER_IMAGE |  awk '{print $3}')
+create_export_containername_script
 if [[ -z $IMAGE ]]; then
     check_online_status_no_image
     logger -p local0.info -t "local0" "No local Docker image $DOCKER_IMAGE found"
