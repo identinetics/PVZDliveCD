@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DOCKER_IMAGE='rhoerbe/pvzd-client-app'
-REGISTRY="docker.io:5000"
+#REGISTRY="docker.io:5000"
 
 runopt='-it'
 while getopts ":hpt" opt; do
@@ -34,7 +34,7 @@ echo "export CONTAINERNAME=$CONTAINERNAME" >> /tmp/set_containername.sh
 
 
 function run_docker_container {
-    notify-send "Docker image $DOCKER_IMAGE found; starting container"
+    notify-send "Docker image $DOCKER_IMAGE found; starting container" -t 3000
     logger -p local0.info -t "local0" "mapping container user's home to $DATADIR"
     source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
     source $DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
@@ -69,7 +69,7 @@ function run_docker_container {
      "
 
     logger -p local0.info -t "local0" "starting docker image $DOCKER_IMAGE"
-    notify-send "starting docker image $DOCKER_IMAGE"
+    notify-send "starting docker image $DOCKER_IMAGE" -t 3000
     $sudo docker run $runopt --rm \
         --hostname=$CONTAINERNAME --name=$CONTAINERNAME \
         $ENVSETTINGS $LOGSETTINGS $VOLMAPPING \
@@ -77,10 +77,10 @@ function run_docker_container {
 }
 
 function get_latest_docker {
-    notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
+    notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB "
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
-    $sudo docker pull $DOCKER_IMAGE | tee >(logger -t "local0")
-    notify-send "Docker image $DOCKER_IMAGE is up to date"
+    $sudo docker pull $DOCKER_IMAGE | logger -t "local0"
+    notify-send "Docker image $DOCKER_IMAGE is up to date" -t 3000
     run_docker_container
 }
 
@@ -91,8 +91,8 @@ function check_online_status_no_image {
             get_latest_docker
             break
         else
-            zenity --error --text "No Internet connection detected! ($i tries left)- please connect or set http_proxy to download docker image)"
-            notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image"
+            zenity --error --titel "No Internet connection detected! ($i tries left)" --text "Please connect or set http_proxy to download docker image)"
+            notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image" -t 3000
             logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
         fi
     done
@@ -101,7 +101,7 @@ function check_online_status_no_image {
 function check_online_status {
     wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
     if [[ $? -eq 0 ]]; then
-        notify-send "Online - Preparing download"
+        notify-send "Online - Preparing download" -t 3000
         logger -p local0.info -t "local0" "Online prepareing download"
         #Checking if Docker image is up to date
         #DOCKER_LATEST="'wget -qO- http://$REGISTRY/v1/repositories/$DOCKER_IMAGE/tags'"
@@ -115,8 +115,8 @@ function check_online_status {
         #fi
 
     else
-        zenity --info --text "Not checking for  docker image update - OFFLINE"
-        notify-send "Not checking for  docker image update - OFFLINE"
+        zenity --info --text "Not checking for  docker image update"  --title "OFFLINE - No Internet Connection"
+        notify-send "Not checking for  docker image update - OFFLINE" -t 3000
         logger -p local0.info -t "local0" "Not checking for  docker image update - OFFLINE"
         run_docker_container
     fi
