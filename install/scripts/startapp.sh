@@ -79,7 +79,7 @@ function run_docker_container {
 function get_latest_docker {
     notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB " -t 50000
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
-    $sudo docker pull $DOCKER_IMAGE
+    $sudo docker pull $DOCKER_IMAGE | tee>(logger -t "local0")
     notify-send "Docker image $DOCKER_IMAGE is up to date"
     run_docker_container
 }
