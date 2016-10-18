@@ -12,8 +12,5 @@ Notification Center schlecht gelöst (vor allem wenn eine Message kein Icon hat)
 
 ## Optimierungsziele
 
-. LiveCD GNOME-Problem eliminieren (issue #6)
-. Skip docker pull if off-line (issue #7)
-. Status monitoring (issue #2)
 . Launch pad (issue #4)
 . App-Menü für alternative container (issue #5)
