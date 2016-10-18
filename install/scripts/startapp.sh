@@ -36,7 +36,7 @@ function run_docker_container {
     $sudo mkdir -p $DATADIR/home/liveuser/
     $sudo chown -R liveuser:liveuser $DATADIR/home/liveuser/
 
-    CONTAINERNAME='x11-app'
+    [[ "$DOCKER_IMAGE" =~ /(.+)$ ]] &&  CONTAINERNAME=${BASH_REMATCH[1]}
 
     # remove dangling container
     if $sudo docker ps -a | grep $CONTAINERNAME > /dev/null; then
