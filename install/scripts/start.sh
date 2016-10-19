@@ -18,20 +18,11 @@ for i in {4..0}; do
   else
     zenity --error --text "If you have an initialized medium, please insert it, wait approximately 3 seconds and press OK.
 
-        If you do not have a an initialized medium, follow these steps:
-        a) Unplug your medium (USB Flash drive) if it is connected
-        b) Open a terminal (from the menu or the 3rd icon from left on the bottom task bar)
-        c) Plug in medium
-        d) Identify the device number of the medium
-           dmesg|tail -15|egrep '(Product|Manufact|logical blocks)'
-        e) Identify the <device path>
-           lsblk --scsi --path
-        f) initialize it:
-           umount </device/path>
-           mkfs.ext4 </device/path>
-           mount </device/path> /mnt
-           touch /mnt/UseMe4DockerData
-        g) press OK" --title "Data medium not found ($i tries left)"
+        Otherwise, follow these steps:
+        a) Initialize a USB flash drive with a single FAT partition (on Windows, Mac, etc.)
+        b) Plug in medium
+        d) Start 'Init USB-Drive' with the desktop icon (or /usr/local/bin/init_usbdrive.sh)
+        press OK" --title "Data medium not found ($i tries left)"
   fi
 done
 
