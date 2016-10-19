@@ -504,12 +504,14 @@ cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
 #cp /usr/share/applications/lxterminal.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerterminal.desktop /home/liveuser/Desktop
+cp /usr/share/applications/initusbdrive.desktop /home/liveuser/Desktop
 
 #Austart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
 #cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/initusbdrive.desktop /home/liveuser/.config/autostart
 
 ##Terminal hide menubar
 mkdir -p /home/liveuser/.config/lxterminal
