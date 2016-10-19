@@ -44,7 +44,10 @@ $sudo bash /tmp/umount_vfat.sh
 logger -p local0.info -t "local0" -s "writing 2 partitions to $FATROOTDEV"
 $sudo dd if=/dev/zero of=$FATROOTDEV bs=512  count=1
 
-# partition with 1 100MB + a second partition filling the rest
+# partition with 1 100MB + a second partition filling the rest:
+# n=new, p=primary, partition=1, start=default, size=100MB
+# n=new, p=primary, partition=2, start=default, size=default
+# print, write/quit
 echo "
 n
 p
@@ -58,19 +61,19 @@ p
 
 p
 w
-s" | $sudo fdisk $FATROOTDEV
+" | $sudo fdisk $FATROOTDEV
 
 # format + mark transfer partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}1 (vfat)"
 $sudo mkfs.vfat "${FATROOTDEV}1"
-$sudo mkdir /mnt/transfer
+$sudo mkdir -p /mnt/transfer
 $sudo mount "${FATROOTDEV}1" /mnt/transfer
 $sudo touch /mnt/transfer/UseMe4Transfer
 
 # format and mark docker data partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}2 (ext4)"
 $sudo mkfs.ext4 "${FATROOTDEV}2"
-$sudo mkdir /mnt/dockerdata
+$sudo mkdir -p /mnt/dockerdata
 $sudo mount "${FATROOTDEV}2" /mnt/dockerdata
 $sudo touch /mnt/dockerdata/UseMe4DockerData
 
