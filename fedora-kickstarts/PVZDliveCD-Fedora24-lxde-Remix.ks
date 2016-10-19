@@ -158,8 +158,7 @@ metacity
 #Fonts
 liberation-mono-fonts
 
-#NTFS and exFAT Support
-ntfs-3g
+#exFAT Support
 fuse-exfat
 
 
