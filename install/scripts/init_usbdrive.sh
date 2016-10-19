@@ -37,7 +37,7 @@ fi
 
 # unmount all partitions of the device
 lsblk --list --path $FATROOTDEV | grep 'part' | awk '{print "umount " $1}' > /tmp/umount_vfat.sh
-logger -p local0.info -t "local0" -s "unmounting vfat device (/tmp/umount_vfat.sh)"
+logger -p local0.info -t "local0" -s "unmounting vfat device(s) (/tmp/umount_vfat.sh)"
 $sudo bash /tmp/umount_vfat.sh
 
 # wipe storage drive
@@ -63,15 +63,15 @@ s" | $sudo fdisk $FATROOTDEV
 # format + mark transfer partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}1 (vfat)"
 $sudo mkfs.vfat "${FATROOTDEV}1"
-$sudo mount "${FATROOTDEV}1" /mnt/transfer
 $sudo mkdir /mnt/transfer
+$sudo mount "${FATROOTDEV}1" /mnt/transfer
 $sudo touch /mnt/transfer/UseMe4Transfer
 
 # format and mark docker data partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}2 (ext4)"
 $sudo mkfs.ext4 "${FATROOTDEV}2"
-$sudo mount "$[FATROOTDEV}2" /mnt/dockerdata
 $sudo mkdir /mnt/dockerdata
+$sudo mount "${FATROOTDEV}2" /mnt/dockerdata
 $sudo touch /mnt/dockerdata/UseMe4DockerData
 
 
