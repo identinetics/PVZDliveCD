@@ -18,8 +18,8 @@ elif [[ $FATDEVCOUNT > 1 ]]; then
    exit 2
 else
    FATDEV=$(cat /tmp/fatdevs)
-   FATROOTDEV=${FATDEV/[0-9]*//}
-   FATROOTDEV=${FATDEV%/}
+   TMP=${FATDEV/[0-9]*//}
+   FATROOTDEV=${TMP%/}
    DEVATTR=$(lsblk --scsi -o 'NAME,FSTYPE,LABEL,VENDOR,MODEL,HOTPLUG,MOUNTPOINT' $FATROOTDEV)
    echo "Selected storage device ${FATROOTDEV} for formatting, deleting any existing data on it"
    while true; do
@@ -56,21 +56,22 @@ p
 2
 
 
+p
 w
 s" | $sudo fdisk $FATROOTDEV
 
 # format + mark transfer partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}1 (vfat)"
-$sudo mkfs.vfat $[FATROOTDEV}1
+$sudo mkfs.vfat "${FATROOTDEV}1"
 $sudo mkdir /run/media/transfer
-$sudo mount ${FATROOTDEV}1 /run/media/transfer
+$sudo mount "${FATROOTDEV}1" /run/media/transfer
 $sudo touch /run/media/transfer/UseMe4Transfer
 
 # format and mark docker data partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}2 (ext4)"
-$sudo mkfs.ext4 ${FATROOTDEV}2
+$sudo mkfs.ext4 "${FATROOTDEV}2"
 $sudo mkdir /run/media/dockerdata
-$sudo mount $[FATROOTDEV}2 /run/media/dockerdata
+$sudo mount "$[FATROOTDEV}2" /run/media/dockerdata
 $sudo touch /run/media/dockerdata/UseMe4DockerData
 
 
