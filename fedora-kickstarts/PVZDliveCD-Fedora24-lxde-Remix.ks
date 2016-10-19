@@ -528,6 +528,11 @@ rm -rf /home/liveuser/desktop/liveinst.desktop
 
 hostnamectl set-hostname livecd --static
 
+#Don't show sudoers lecture
+cat > /etc/sudoers.d/privacy <<FOE
+Defaults    lecture = never
+FOE
+
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser
 
