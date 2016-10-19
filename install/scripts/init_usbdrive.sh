@@ -3,7 +3,7 @@
 # initialize usb drive by device path
 
 
-/usr/bin/setterm term linux -foreground black -background yellow
+/usr/bin/setterm term linux -foreground yellow -background black
 
 if [ $(id -u) -ne 0 ]; then
     sudo='sudo'
