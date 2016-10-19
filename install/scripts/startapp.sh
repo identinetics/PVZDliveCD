@@ -93,7 +93,7 @@ function check_online_status_no_image {
             get_latest_docker
             break
         else
-            zenity --error --text "Please connect or set http_proxy in set_httpproxy.sh to download docker image" --title "No Internet connection detected! ($i tries left)"
+            zenity --error --text "Please connect (WiFi, LAN) or set http_proxy in $DATADIR/set_httpproxy.sh to download docker image" --title "No Internet connection detected! ($i tries left)"
             notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image" -t 3000
             logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
         fi
