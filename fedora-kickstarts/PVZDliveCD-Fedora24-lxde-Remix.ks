@@ -24,6 +24,8 @@ repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=f
 repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
 url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
 repo --name=Docker --baseurl https://yum.dockerproject.org/repo/main/fedora/$releasever/
+url --mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-source-$releasever&arch=$basearch
+
 
 %packages
 @base-x
@@ -155,6 +157,10 @@ metacity
 
 #Fonts
 liberation-mono-fonts
+
+#NTFS and exFAT Support
+ntfs-3g
+fuse-exfat
 
 
 %end
