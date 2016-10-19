@@ -16,20 +16,20 @@ for i in {4..0}; do
 
     break
   else
-    zenity --error --text "If you have an initialized medium, please insert it, wait approximately 3 Seconds and press OK.
+    zenity --error --text "If you have an initialized medium, please insert it, wait approximately 3 seconds and press OK.
 
-        If you don't have a an initialized medium, follow these steps:
-        a) unplug your medium (USB Flash drive) if it is connected
-        b) open a terminal (from the menu or the 3rd icon from left on the bottom task bar
-        c) plug in medium
+        If you do not have a an initialized medium, follow these steps:
+        a) Unplug your medium (USB Flash drive) if it is connected
+        b) Open a terminal (from the menu or the 3rd icon from left on the bottom task bar)
+        c) Plug in medium
         d) Identify the device number of the medium
-           dmesg|tail -15|egrep '(Product|Manufact|)'
-        e) Identify the device path
+           dmesg|tail -15|egrep '(Product|Manufact|logical blocks)'
+        e) Identify the <device path>
            lsblk --scsi --path
         f) initialize it:
-           umount /device/path
-           mkfs.ext4 /device/path
-           mount /device/path /mnt
+           umount </device/path>
+           mkfs.ext4 </device/path>
+           mount </device/path> /mnt
            touch /mnt/UseMe4DockerData
         g) press OK" --title "Data medium not found ($i tries left)"
   fi
