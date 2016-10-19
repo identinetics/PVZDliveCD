@@ -24,7 +24,11 @@ repo --name=fedora --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=f
 repo --name=updates --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=updates-released-f$releasever&arch=$basearch
 url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever&arch=$basearch
 repo --name=Docker --baseurl https://yum.dockerproject.org/repo/main/fedora/$releasever/
+repo --name='RPM Fusion for Fedora $releasever - Free - Source' --baseurl=http://download1.rpmfusion.org/free/fedora/releases/$releasever/Everything/$basearch/os/
 url --mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-source-$releasever&arch=$basearch
+repo --name='RPM Fusion for Fedora $releasever - Free - Updates' --baseurl=http://download1.rpmfusion.org/free/fedora/updates/$releasever/$basearch/
+url --mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-updates-released-source-$releasever&arch=$basearch
+
 
 
 %packages
