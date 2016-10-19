@@ -42,17 +42,13 @@ function run_docker_container {
     $sudo mkdir -p $DATADIR/home/liveuser/
     $sudo chown -R liveuser:liveuser $DATADIR/home/liveuser/
 
-
-
     # remove dangling container
     if $sudo docker ps -a | grep $CONTAINERNAME > /dev/null; then
         logger -p local0.info -t "local0" "deleting dangling container $CONTAINERNAME"
         $sudo docker rm $CONTAINERNAME
     fi
 
-
     $DATADIR/checkcontainerup.sh &
-
 
     ENVSETTINGS="
         -e DISPLAY=$DISPLAY
@@ -63,11 +59,16 @@ function run_docker_container {
         -e no_proxy=$no_proxy
     "
     LOGSETTINGS='--log-driver=journald --log-opt tag="local0" '
+    mkdir -p $XFERDIR
     VOLMAPPING="
         --privileged -v /dev/bus/usb:/dev/bus/usb
         -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
-        -v $DATADIR/home/liveuser/:/home/liveuser:Z
+        -v $DATADIR:/home/liveuser:Z
+        -v $XFERDIR:/transfer:Z
      "
+
+    touch $DATADIR/localdockersettings.sh
+    source $DATADIR/localdockersettings.sh
 
     logger -p local0.info -t "local0" "starting docker image $DOCKER_IMAGE"
     notify-send "starting docker image $DOCKER_IMAGE" -t 3000
