@@ -21,7 +21,7 @@ for i in {4..0}; do
         Otherwise, follow these steps:
         a) Initialize a USB flash drive with a single FAT partition (on Windows, Mac, etc.)
         b) Plug in medium
-        d) Start "Init USB Drive" with the desktop icon (or /usr/local/bin/init_usbdrive.sh)
+        d) Start 'Init USB-Drive' with the desktop icon (or /usr/local/bin/init_usbdrive.sh)
         press OK" --title "Data medium not found ($i tries left)"
   fi
 done

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Init USB-drive
+Comment=Initialize Data Medium
+Keywords=shell;prompt;command;commandline;
+Exec=/bin/lxterminal -T PVZDclient-Terminal --geometry=120x30 -e /usr/local/bin/init_usbdrive.sh
+Icon=utilities-terminal
+Type=Application
+
+Hidden=false
+NoDisplay=false
+Name[en_US]=initusbdrive.desktop

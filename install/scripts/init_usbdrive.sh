@@ -2,6 +2,9 @@
 
 # initialize usb drive by device path
 
+
+/usr/bin/setterm term linux -foreground black -background yellow
+
 if [ $(id -u) -ne 0 ]; then
     sudo='sudo'
 fi
@@ -21,6 +24,7 @@ else
    TMP=${FATDEV/[0-9]*//}
    FATROOTDEV=${TMP%/}
    DEVATTR=$(lsblk --scsi -o 'NAME,FSTYPE,LABEL,VENDOR,MODEL,HOTPLUG,MOUNTPOINT' $FATROOTDEV)
+   echo "Found storage device:\n$DEVATTR"
    echo "Selected storage device ${FATROOTDEV} for formatting, deleting any existing data on it"
    while true; do
        read -p "Continue (YESSS/n)?" choice
