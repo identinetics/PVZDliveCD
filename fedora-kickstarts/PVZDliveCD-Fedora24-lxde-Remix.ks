@@ -36,6 +36,7 @@ repo --name=Docker --baseurl https://yum.dockerproject.org/repo/main/fedora/$rel
 #@multimedia
 @hardware-support
 #@printing
+coreutils-single
 
 # Explicitly specified here:
 # <notting> walters: because otherwise dependency loops cause yum issues.
@@ -90,7 +91,7 @@ system-config-network
 docker-engine
 nload
 wget
-coreutils-single
+
 
 # rebranding
 -fedora-logos
@@ -525,6 +526,12 @@ FOE
 
 rm -rf /home/liveuser/desktop/liveinst.desktop
 
+hostnamectl set-hostname livecd --static
+
+#Don't show sudoers lecture
+cat > /etc/sudoers.d/privacy <<FOE
+Defaults    lecture = never
+FOE
 
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser

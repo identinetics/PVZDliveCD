@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-CONTAINERNAME='x11-app'
+source /tmp/set_containername.sh
 
 if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
