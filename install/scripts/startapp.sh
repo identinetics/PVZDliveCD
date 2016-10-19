@@ -1,7 +1,8 @@
 #!/bin/bash
 
-DOCKER_IMAGE='rhoerbe/pvzd-client-app'
-#REGISTRY="docker.io:5000"
+source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
+source $DATADIR/set_docker_image.sh >> /tmp/startapp.log 2>&1
+
 
 runopt='-it'
 while getopts ":hpt" opt; do
@@ -79,7 +80,7 @@ function run_docker_container {
 function get_latest_docker {
     notify-send "Pulling docker image $DOCKER_IMAGE; please wait, Update may have several 100 MB "
     logger -p local0.info -t "local0" "pulling docker image $DOCKER_IMAGE"
-    $sudo docker pull $DOCKER_IMAGE | logger -t "local0"
+    $sudo /usr/bin/lxterminal -T DockerImagePullstatus -e docker pull $DOCKER_IMAGE
     notify-send "Docker image $DOCKER_IMAGE is up to date" -t 3000
     run_docker_container
 }
@@ -91,7 +92,7 @@ function check_online_status_no_image {
             get_latest_docker
             break
         else
-            zenity --error --titel "No Internet connection detected! ($i tries left)" --text "Please connect or set http_proxy to download docker image)"
+            zenity --error --text "Please connect or set http_proxy to download docker image" --title "No Internet connection detected! ($i tries left)"
             notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image" -t 3000
             logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
         fi

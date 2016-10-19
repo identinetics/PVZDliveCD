@@ -60,11 +60,11 @@ function create_exportenv_script {
   echo "export DATADIR=$data_dir" >> /tmp/set_data_dir.sh
 }
 
-function conf_startapp_script {
-  # docker script is started from UseMe4DockerData dir
-  # (easy to change script without touching the boot image)
+function set_docker_image_script {
+   # docker image is set in UseMe4DockerData dir
+   # (easy to change script without touching the boot image)
   data_dir=$1
-  cp -n /usr/local/bin/startapp.sh $data_dir/   #copy default script
+  cp -n /usr/local/bin/set_docker_image.sh $data_dir/   #copy default script
 }
 
 function checkcontainerup_script {
@@ -79,7 +79,7 @@ function setup_all {
   set_http_proxy_config
   patch_dockerd_config $data_dir
   create_exportenv_script $data_dir
-  conf_startapp_script $data_dir
+  set_docker_image_script $data_dir
   checkcontainerup_script $data_dir
 }
 
