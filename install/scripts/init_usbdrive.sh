@@ -63,15 +63,15 @@ s" | $sudo fdisk $FATROOTDEV
 # format + mark transfer partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}1 (vfat)"
 $sudo mkfs.vfat "${FATROOTDEV}1"
-$sudo mkdir /run/media/transfer
-$sudo mount "${FATROOTDEV}1" /run/media/transfer
-$sudo touch /run/media/transfer/UseMe4Transfer
+$sudo mount "${FATROOTDEV}1" /mnt/transfer
+$sudo mkdir /mnt/transfer
+$sudo touch /mnt/transfer/UseMe4Transfer
 
 # format and mark docker data partition
 logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}2 (ext4)"
 $sudo mkfs.ext4 "${FATROOTDEV}2"
-$sudo mkdir /run/media/dockerdata
-$sudo mount "$[FATROOTDEV}2" /run/media/dockerdata
-$sudo touch /run/media/dockerdata/UseMe4DockerData
+$sudo mount "$[FATROOTDEV}2" /mnt/dockerdata
+$sudo mkdir /mnt/dockerdata
+$sudo touch /mnt/dockerdata/UseMe4DockerData
 
 
