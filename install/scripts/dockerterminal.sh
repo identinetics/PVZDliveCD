@@ -8,4 +8,4 @@ fi
 
 /usr/bin/setterm term linux -foreground black -background white
 clear
-$sudo docker exec -it $CONTAINERNAME /bin/bash
+$sudo docker exec -it $CONTAINERNAME /exec_app.sh

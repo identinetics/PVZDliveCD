@@ -77,27 +77,21 @@ After the build is finished, don't forget to enable your SELinux again
     dmesg | tail  # checl the the device name of the USB-drive
     dd if=livecd-PVZDliveCD-Fedora24-lxde-Remix-<imageid>.iso of=/dev/<usb-drive>
 
-    // or like this on OSX (dd dead slow if not using rdisk; block size needs lowercase m):
+    // or like this on OSX (dd dead slow if not using rdisk; block size needs _lowercase_ m):
     sudo dd bs=1m if=livecd-centos-7-gnome-docker-pvzdclient-v0_32.iso  of=/dev/rdisk2
 
 ## Usage (generic)
 
 - You require 2 media:
     1. the boot medium with the LiveCD (should be read-only, such as CD-ROM), and
-    2. a writeable medium, large enough to contain a docker image and docker work files. Start with at least 8GB for a GUI.
-- Format the writeable medium with a standard linux filesystem, such as ext4 and mark it with a a file named 'UseMe4DockerData'. E.g.:
-
-    // check dmesg for the actual device of your USB flash drive
-    mkfs.vfat /dev/sdX1
-    mount /dev/sdX1  /mnt
-    touch /mnt/UseMe4DockerData
-
+    2. a writeable medium, large enough to contain a docker image and docker work files.
+       Start with at least 8GB for a GUI.
+- Initialize the data medium:
+    Create a FAT32 partition, insert and follow the instruction or run /usr/local/bin/init_usbdrive.sh
 - Insert both media into the PC and connect your smartcard reader. Any PCSC-compliant reader should work.
 - Boot from the boot-medium (you might have to modify the boot sequence in the BIOS)
 - Wait for the system to come up
-
-. Boot selection issues
-- You might not have access to the BIOS settings - check with your admin
+- Boot selection issues- You might need to have access to the BIOS settings - check with your admin
 
 
 ## Security Considerations

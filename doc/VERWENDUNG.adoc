@@ -9,7 +9,7 @@
        Konfigurationsdateien. (Empfohlene Größe >= 8GB.)
 
 - Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../README.adoc[README])
-- Das Daten-Medium wird mit FAT (FAT32 oder EXFAT) formatiert (-> Windows). Beim Start wir die Meldung
+- Das Daten-Medium wird mit FAT (FAT32, nicht EXFAT) formatiert (-> Windows). Beim Start wir die Meldung
   'Data medium not found' ausgegeben. Entsprechend der Anleitung wird das Daten-Medium dann initatilisert.
   Es steht dann eine 100MB FAT-Partition für den Datenaustausch mit Windows und der restliche Platz für
   die Speicherung der Anwendung zur Verfügung.
