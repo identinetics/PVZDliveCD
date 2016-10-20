@@ -88,6 +88,8 @@ After the build is finished, don't forget to enable your SELinux again
        Start with at least 8GB for a GUI.
 - Initialize the data medium:
     Create a FAT32 partition, insert and follow the instruction or run /usr/local/bin/init_usbdrive.sh
+    (Requires to have just a single FAT partition - otherwise format the drive with mkfs.ext4, cd into
+     its root dir and and run `touch UseMe4DockerData`)
 - Insert both media into the PC and connect your smartcard reader. Any PCSC-compliant reader should work.
 - Boot from the boot-medium (you might have to modify the boot sequence in the BIOS)
 - Wait for the system to come up

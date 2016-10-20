@@ -12,7 +12,7 @@
 - Das Daten-Medium wird mit FAT (FAT32, nicht EXFAT) formatiert (-> Windows). Beim Start wir die Meldung
   'Data medium not found' ausgegeben. Entsprechend der Anleitung wird das Daten-Medium dann initatilisert.
   Es steht dann eine 100MB FAT-Partition für den Datenaustausch mit Windows und der restliche Platz für
-  die Speicherung der Anwendung zur Verfügung.
+  die Speicherung der Anwendung zur Verfügung. (Dafür darf nur _eine_ FAT-Partition im System sein)
 - Das System benötigt eine ausgehende Netzwerkverbindung um das Docker-Image und die aktuelle
   Bürgerkartensoftware (MOCCA) zu laden und zu aktualisieren. Dafür ist der Port 443 freizuschalten.
 - Eine Proxy-Konfiguration ist möglich, indem die Datei set_httpproxy.sh im Daten-Medium angepasst wird.
