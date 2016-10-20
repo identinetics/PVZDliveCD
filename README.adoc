@@ -35,7 +35,7 @@ You may either download the image or build it yourself.
 ### Download the ISO image
 
 Based on Fedora 24 LXDE Spin
-https://www.test.portalverbund.gv.at/pvzdclient/livecd-centos-7-gnome-docker-pvzdclient-v0_38.iso[livecd-pvzdclient-v0_38]
+https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_61.iso[livecd-pvzdclient-v0_61]
 
 ### Make the ISO image
 Based on Fedora 24 LXDE Spin
@@ -77,7 +77,7 @@ After the build is finished, don't forget to enable your SELinux again
     dmesg | tail  # checl the the device name of the USB-drive
     dd if=livecd-PVZDliveCD-Fedora24-lxde-Remix-<imageid>.iso of=/dev/<usb-drive>
 
-    // or like this on OSX (dd dead slow if not using rdisk; block size needs _lowercase_ m):
+    // or like this on OSX (dd dead slow if not using rdisk; block size needs _lowercase m):
     sudo dd bs=1m if=livecd-centos-7-gnome-docker-pvzdclient-v0_32.iso  of=/dev/rdisk2
 
 ## Usage (generic)
