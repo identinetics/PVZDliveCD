@@ -22,7 +22,7 @@ for i in {4..0}; do
         a) Initialize a USB flash drive with a single FAT partition (on Windows, Mac, etc.)
         b) Plug in USB medium
         c) Start 'Init USB-Drive' with the desktop icon (or /usr/local/bin/init_usbdrive.sh)
-        d) press OK" --title "Data medium not found ($i tries left)"
+        d) press OK when done" --title "Data medium not found ($i tries left)"
   fi
 done
 
