@@ -8,5 +8,6 @@ mkdir livecache
 
 sudo livecd-creator -d -v  -c fedora-kickstarts/PVZDliveCD-Fedora24-lxde-Remix.ks \
     --cache=$PROJ_HOME/livecache/ \
+    --releasever=24\
     --nocleanup | tee > build.log
 

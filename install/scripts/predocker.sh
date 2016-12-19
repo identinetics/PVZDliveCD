@@ -4,12 +4,14 @@
 # This script searches for a device having a mark in the path of the mount point. If found
 # (or passed via cl arg) it changes the docker daemon's and app' start options accordingly.
 # If not found it exits with return code 1.
+# The script also searches for an optional transfer medium (to offer vfat instead on ext4)
 
 # format debug output if using bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 mark_dir=
 mark_filename="UseMe4DockerData"
+mark_filename2="UseMe4Transfer"
 
 while getopts ":d:" opt
 do
@@ -55,16 +57,19 @@ function patch_dockerd_config {
 
 function create_exportenv_script {
   data_dir=$1
+  xfer_dir=$2
+  xfer_dir=${xfer_dir:=$data_dir/transfer}
   logger -p local0.info -t "local0" "setting up export env script"
   echo '#!/bin/bash' > /tmp/set_data_dir.sh
   echo "export DATADIR=$data_dir" >> /tmp/set_data_dir.sh
+  echo "export XFERDIR=$xfer_dir" >> /tmp/set_data_dir.sh
 }
 
-function conf_startapp_script {
-  # docker script is started from UseMe4DockerData dir
-  # (easy to change script without touching the boot image)
+function set_docker_image_script {
+   # docker image is set in UseMe4DockerData dir
+   # (easy to change script without touching the boot image)
   data_dir=$1
-  cp -n /usr/local/bin/startapp.sh $data_dir/   #copy default script
+  cp -n /usr/local/bin/set_docker_image.sh $data_dir/   #copy default script
 }
 
 function checkcontainerup_script {
@@ -78,23 +83,35 @@ function setup_all {
   logger -p local0.info -t "local0"  "predocker.sh: Data dir = $data_dir"
   set_http_proxy_config
   patch_dockerd_config $data_dir
-  create_exportenv_script $data_dir
-  conf_startapp_script $data_dir
+  create_exportenv_script $data_dir $xfer_dir
+  set_docker_image_script $data_dir
   checkcontainerup_script $data_dir
 }
 
 function find_data_dir_by_filelist {
   dir_list=`cat $1`
   for dir in $dir_list; do
-    # echo "Checking: $dir"
     if [ -e "$dir/$mark_filename" ]; then
-    # echo "Dir was found: $dir"
-      lmark_dir=$dir
-      echo $lmark_dir
+      echo $dir
       return 0
     fi
   done
-  logger -p local0.info -t "local0" -s "No directory found in file list"
+  logger -p local0.info -t "local0" -s "No docker data directory found in file list"
+  return 1
+}
+
+function find_and_remount_xfer_dir_by_filelist {
+  dir_list=`cat $1`
+  if [ -z ${xdir+x} ]; then return 0; fi              # return if previously found
+  for dir in $dir_list; do
+    if [ -e "$dir/$mark_filename2" ]; then
+      mount --bind $dir -o uid=liveuser /mnt/transfer # move mount point to fixed location
+      xdir=$dir
+      echo $xdir
+      return 0
+    fi
+  done
+  logger -p local0.info -t "local0" -s "No transfer directory found in file list"
   return 1
 }
 
@@ -118,6 +135,7 @@ function  mount_not_yet_mounted_disks {
   done
 }
 
+
 # --- main ---
 
 if [ -z "$mark_dir" ]; then
@@ -125,6 +143,7 @@ if [ -z "$mark_dir" ]; then
   get_mounted_disks
   data_dir=$(find_data_dir_by_filelist "/tmp/mounted_dirs1")
   ret_val=$?
+  xfer_dir=$(find_and_remount_xfer_dir_by_filelist "/tmp/mounted_dirs1")
   if [ "$ret_val" -eq "0" ]; then
     setup_all
     exit 0
@@ -134,6 +153,7 @@ if [ -z "$mark_dir" ]; then
   mount_not_yet_mounted_disks
   data_dir=$(find_data_dir_by_filelist "/tmp/mounted_dirs2")
   ret_val=$?
+  xfer_dir=$(find_and_remount_xfer_dir_by_filelist "/tmp/mounted_dirs2")
   if [ "$ret_val" -eq "0" ]; then
     setup_all
     exit 0

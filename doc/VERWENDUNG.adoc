@@ -8,34 +8,36 @@
     2. ein beschreibbares Daten-Medium, groß genug für ein Docker Image, Arbeits- und
        Konfigurationsdateien. (Empfohlene Größe >= 8GB.)
 
-- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../aREADME.adoc[README])
-- Das Daten-Medium wird mit einem Linux Filesystem, z.B. ext4 formatiert. Um es erkennbar zu machen,
-  wird es im Wurzelverzeichnis mit der (leeren) Datei 'UseMe4DockerData' markiert. Das kann zum Beispiel wie folgt
-  gemacht werden. Zuerst stellt man den Device-PFad fest, etwa mit `dmesg | tail`, gleich nachdem der USB flash drive
-  eingesteckt wird, oder mit `df -hT` wenn man die Devices anhand anderer Merkmale unterscheiden kann. Wenn das Medium
-  unter /dev/sdb1 gelistet wird, kann es mit folgenden Befehlen im Terminal eingerichtet werden:
-    
-    mkfs.ext4 /dev/sdb1
-    mount /dev/sdb1  /mnt
-    touch /mnt/UseMe4DockerData
-
-- Um Inputdaten auf das System zu bekommen, kann man sie entweder über das Netz holen
-  (curl, wget, wget und Firefox sind vorhanden), oder man benötigt einen dritten
-  USB Drive als Transfermedium, der mit FAT formatiert ist um einfach mit Windows und OSX auszutauschen.
-- Das System benötigt eine ausgehende Netzwerkverbindung um das Docker-Image zu laden
-  und zu aktualisieren. Dafür ist der Port 443 freizuschalten. Eine Proxy-Konfiguration
-  ist möglich, indem die Datei set_httpproxy.sh im Daten-Medium angepasst wird.
+- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../README.adoc[README])
+- Das Daten-Medium wird mit FAT (FAT32, nicht EXFAT) formatiert (-> Windows). Beim Start wir die Meldung
+  'Data medium not found' ausgegeben. Entsprechend der Anleitung wird das Daten-Medium dann initatilisert.
+  Es steht dann eine 100MB FAT-Partition für den Datenaustausch mit Windows und der restliche Platz für
+  die Speicherung der Anwendung zur Verfügung. (Dafür darf nur _eine_ FAT-Partition im System sein)
+- Das System benötigt eine ausgehende Netzwerkverbindung um das Docker-Image und die aktuelle
+  Bürgerkartensoftware (MOCCA) zu laden und zu aktualisieren. Dafür ist der Port 443 freizuschalten.
+- Eine Proxy-Konfiguration ist möglich, indem die Datei set_httpproxy.sh im Daten-Medium angepasst wird.
   Ein Template wird beim ersten Start an die Stelle kopiert.
 
-    gedit $DATADIR/set_httpproxy_settings.sh
+    source /tmp/set_data_dir.sh
+    vi $DATADIR/set_httpproxy_settings.sh
 
 ### Start
 - Boot- und Daten-Medium sowie den Kartenleser an den PC anstecken
 - Vom Boot-Medium starten - dazu muss man meistens die Boot-Reihenfolge im BIOS ändern
 - Warten bis das System gestartet ist
 - Beim ersten Start und im Fall eines Updates muss das Docker Image aus dem Netz geladen werden
-- Der Download wird nicht automatisch angezeigt, kann aber erkannt werden, wenn die letzte Meldung
-  in /var/log/dockerapp.log "pulling docker image" enthält
 - Die weiteren Schritt des Starts sind in der Anwendungsdoku enthalten
-- Um die App neu zu starten, ruft am im Terminal `/usr/local/bin/start.sh' auf. Oder man bootet wieder.
 
+### Andere Docker Images starten und Parameter setzen
+
+Im Daten-Medium sind Scripts mit denen das System konfiguriert werden kann.
+
+Mit set_docker_image.sh kann das zu startende Docker Image geändert werden.
+Mit localdockersettings.sh können folgende Variable geändert oder überschrieben werden, die für
+`docker run` ausgewertet werden:
+
+    ENVSETTINGS
+    LOGSETTINGS
+    VOLMAPPING
+
+Siehe auch https://github.com/identinetics/PVZDliveCD/blob/master/install/scripts/startapp.sh#L53[startapp.sh].
