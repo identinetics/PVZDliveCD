@@ -68,7 +68,7 @@ Then run the build.sh in <path to contain project>
 Get a tee or two, it takes some time
 
 After the build is finished, don't forget to enable your SELinux again
-    sudo setenforce targeted
+    sudo setenforce enforcing
 
 ### Copy to boot device
 - Copy the ISO image to your boot device (DVD or USB Flash >= 1GB), e.g. like this:
