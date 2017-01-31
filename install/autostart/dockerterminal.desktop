@@ -1,8 +1,9 @@
 [Desktop Entry]
-Name=DockerAppTerminal
-Comment=Use the docker app command line
+Name=PVZDclient Terminal
+Comment=PAtool & PMP in Docker App Command Line
 Keywords=shell;prompt;command;commandline;
-Exec=/bin/lxterminal -T PVZDclient-Terminal --geometry=120x30 -e /usr/local/bin/dockerterminal.sh
+#Exec=/bin/lxterminal -T PVZDclient-Terminal --geometry=120x30 -e /usr/local/bin/dockerterminal.sh
+Exec=/usr/bin/xcfe4-terminal -T PVZDclient-Terminal --geometry=120x40 --hide-menubar -e /usr/local/bin/dockerterminal.sh
 Icon=utilities-terminal
 Type=Application
 

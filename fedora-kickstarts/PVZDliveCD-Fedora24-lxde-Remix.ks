@@ -92,6 +92,7 @@ glibc-all-langpacks
 
 midori
 system-config-network
+xfce4-terminal
 
 #Docker
 docker-engine
@@ -463,6 +464,8 @@ chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
 mkdir -p $INSTALL_ROOT/usr/local/doc
 mkdir -p $INSTALL_ROOT/usr/local/doc/pvzd
 cp -p $CLCDDIR/install/doc/lxterminal.conf $INSTALL_ROOT/usr/local/doc/pvzd/
+mkdir -p $INSTALL_ROOT/etc/xfce4-terminal
+cp -p $CLCDDIR/install/config/terminalrc.* $INSTALL_ROOT/etc/xfce4-terminal/
 
 #copy sudoers file
 cp -ar $CLCDDIR/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
@@ -506,7 +509,7 @@ cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
 cp /usr/share/applications/dockerterminal.desktop /home/liveuser/Desktop
 cp /usr/share/applications/initusbdrive.desktop /home/liveuser/Desktop
 
-#Austart Docker scripts
+#Autostart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
 cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
 cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart

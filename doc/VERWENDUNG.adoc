@@ -9,10 +9,12 @@
        Konfigurationsdateien. (Empfohlene Größe >= 8GB.)
 
 - Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../README.adoc[README])
-- Das Daten-Medium wird mit FAT (FAT32, nicht EXFAT) formatiert (-> Windows). Beim Start wir die Meldung
-  'Data medium not found' ausgegeben. Entsprechend der Anleitung wird das Daten-Medium dann initatilisert.
-  Es steht dann eine 100MB FAT-Partition für den Datenaustausch mit Windows und der restliche Platz für
-  die Speicherung der Anwendung zur Verfügung. (Dafür darf nur _eine_ FAT-Partition im System sein)
+- Das leere Daten-Medium wird mit FAT (FAT32, nicht EXFAT) formatiert (z.B. mit Windows).
+- Beim Start der LiveCD wird die Meldung 'Data medium not found' angezeigt. Entsprechend der
+  angezeigten Anleitung wird das Daten-Medium dann initialisiert. Anmerkung: Es darf nur
+  _eine_ FAT-Partition gemountet sein, andere mit umount entfernen. (Manuell: /usr/local/bin/init_usbdrive.sh)
+- Es steht dann eine 100MB FAT-Partition für den Datenaustausch mit Windows und der restliche Platz für
+  die Speicherung der Anwendung zur Verfügung.
 - Das System benötigt eine ausgehende Netzwerkverbindung um das Docker-Image und die aktuelle
   Bürgerkartensoftware (MOCCA) zu laden und zu aktualisieren. Dafür ist der Port 443 freizuschalten.
 - Eine Proxy-Konfiguration ist möglich, indem die Datei set_httpproxy.sh im Daten-Medium angepasst wird.
