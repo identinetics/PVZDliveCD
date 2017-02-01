@@ -4,22 +4,19 @@
 read PROJHOME < PROJHOMEvar
 echo "PROJHOME is $PROJHOME"
 
-# autostart apps and related scripts
+# autostart apps and scripts
 cp -p $PROJHOME/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
 cp -ar $PROJHOME/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
 chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
-mkdir -p $INSTALL_ROOT/usr/local/doc
 mkdir -p $INSTALL_ROOT/usr/local/doc/pvzd
 
-#cp -p $PROJHOME/install/doc/lxterminal.conf $INSTALL_ROOT/usr/local/doc/pvzd/
-mkdir -p $INSTALL_ROOT/etc/xfce4-terminal
-cp -p $PROJHOME/install/config/terminalrc.* $INSTALL_ROOT/etc/xfce4-terminal/
-mkdir -p $INSTALL_ROOT/usr/local/config/xfce4-terminal/
-cp -p $PROJHOME/install/config/terminalrc.* $INSTALL_ROOT/usr/local/config/xfce4-terminal/
-
-#copy sudoers filef
+#configure sudoers
 cp -ar $PROJHOME/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
 chown root:root $INSTALL_ROOT/etc/sudoers.d/predocker
+
+# default theme for xfce4-terminal windows
+mkdir -p $INSTALL_ROOT/usr/share/applications/xfce4/terminal
+cp -p $PROJHOME/install/xfce4-terminal-config/terminalrc $INSTALL_ROOT/usr/share/applications/xfce4/terminal/
 
 %end
 
@@ -71,6 +68,11 @@ cp /usr/share/applications/initusbdrive.desktop /home/liveuser/.config/autostart
 ##sed doesn't work here
 #sed -i 's/hidemenubar=false/hidemenubar=true/' /home/liveuser/.config/lxterminal/lxterminal.conf
 #sed -i 's/fontname=.*/fontname=Liberation\ Mono\ 10/' /home/liveuser/.config/lxterminal/lxterminal.conf
+
+# xcfe4-terminal defaults (larger, white on black)
+mkdir -p /home/liveuser/.config/xfce4/terminal
+cp -p /usr/share/applications/xfce4/terminal/terminalrc /home/liveuser/.config/xfce4/terminal/
+
 
 #Docker
 mkdir -p /mnt/docker

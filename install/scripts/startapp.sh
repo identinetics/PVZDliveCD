@@ -67,7 +67,7 @@ function run_docker_container {
         -v $XFERDIR:/transfer:Z
      "
 
-    touch $DATADIR/localdockersettings.sh
+    touch $DATADIR/localdockersettings.sh 2>/dev/null
     source $DATADIR/localdockersettings.sh
 
     logger -p local0.info -t "local0" "starting docker image $DOCKER_IMAGE"

@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=PVZDclient Terminal
-Comment=PAtool & PMP in Docker App Command Line
+Comment=PVZDclient (PAtool & PMP) CLI in Docker App
 Keywords=shell;prompt;command;commandline;
-Exec=/usr/bin/xcfe4-terminal -T PVZDclient-Terminal --geometry=120x40 --hide-menubar -e /usr/local/bin/dockerterminal.sh
+Exec=/usr/bin/xfce4-terminal -T PVZD-Client --hide-menubar -e /usr/local/bin/dockerterminal.sh
 Icon=utilities-terminal
 Type=Application
 
 Hidden=false
 NoDisplay=false
-Name[en_US]=dockerterminal.desktop
+Name[en_US]=PVZDclient-terminal.desktop
