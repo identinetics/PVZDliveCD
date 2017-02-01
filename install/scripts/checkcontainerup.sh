@@ -16,7 +16,7 @@ while [ $counter -lt 40 ]; do
     if [ "$CONTAINER_IS_UP" == "true" ]; then
       notify-send "Starting Docker Container Terminal"
       logger -p local0.info -t "local0" "Starting Docker Container Terminal"
-      $sudo /bin/lxterminal -T PVZDclient-Terminal --geometry=120x30 -e /usr/local/bin/dockerterminal.sh
+      $sudo /usr/bin/xfce4-terminal -T PVZD-Client --hide-menubar -e /usr/local/bin/dockerterminal.sh
       exit 0
     else
       CONTAINER_IS_UP=$($sudo docker inspect -f {{.State.Running}} $CONTAINERNAME 2>/dev/null)
