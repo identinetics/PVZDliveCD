@@ -3,7 +3,7 @@
 rm -f PVZDliveCD*.iso
 
 PROJ_HOME=$PWD
-echo $PWD > CLCDDIRvar
+echo $PWD > PROJHOMEvar
 mkdir livecache
 
 sudo livecd-creator -d -v  -c fedora-kickstarts/Fedora24-lxde-remix.ks \

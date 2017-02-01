@@ -48,7 +48,7 @@ Based on Fedora 24 LXDE Spin
     git clone identinetics/PVZDliveCD
     cd PVZDliveCD
     PROJ_HOME=$PWD
-    echo $PWD > CLCDDIRvar
+    echo $PWD > PROJHOMEvar
     mkdir livecache
 
 #### Configure, build and initialize boot device

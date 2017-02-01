@@ -1,25 +1,24 @@
 %post --nochroot
 
-# copy scripts
-echo "read CLCDDIR var"
-read CLCDDIR < CLCDDIRvar
-echo "CLCDDIR is $CLCDDIR"
+# get source dir
+read PROJHOME < PROJHOMEvar
+echo "PROJHOME is $PROJHOME"
 
 # autostart apps and related scripts
-cp -p $CLCDDIR/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
-cp -ar $CLCDDIR/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
+cp -p $PROJHOME/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
+cp -ar $PROJHOME/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
 chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
 mkdir -p $INSTALL_ROOT/usr/local/doc
 mkdir -p $INSTALL_ROOT/usr/local/doc/pvzd
 
-#cp -p $CLCDDIR/install/doc/lxterminal.conf $INSTALL_ROOT/usr/local/doc/pvzd/
+#cp -p $PROJHOME/install/doc/lxterminal.conf $INSTALL_ROOT/usr/local/doc/pvzd/
 mkdir -p $INSTALL_ROOT/etc/xfce4-terminal
-cp -p $CLCDDIR/install/config/terminalrc.* $INSTALL_ROOT/etc/xfce4-terminal/
+cp -p $PROJHOME/install/config/terminalrc.* $INSTALL_ROOT/etc/xfce4-terminal/
 mkdir -p $INSTALL_ROOT/usr/local/config/xfce4-terminal/
-cp -p $CLCDDIR/install/config/terminalrc.* $INSTALL_ROOT/usr/local/config/xfce4-terminal/
+cp -p $PROJHOME/install/config/terminalrc.* $INSTALL_ROOT/usr/local/config/xfce4-terminal/
 
 #copy sudoers filef
-cp -ar $CLCDDIR/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
+cp -ar $PROJHOME/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
 chown root:root $INSTALL_ROOT/etc/sudoers.d/predocker
 
 %end

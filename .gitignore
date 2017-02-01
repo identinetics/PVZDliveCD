@@ -2,6 +2,6 @@
 .idea/*
 *.iso
 *.log
-CLCDDIRvar
+PROJHOMEvar
 unused/*
 livecache
