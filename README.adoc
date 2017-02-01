@@ -38,8 +38,7 @@ You may either download the image or build it yourself.
 
 ### Download the ISO image
 
-Based on Fedora 24 LXDE Spin
-https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_61.iso[livecd-pvzdclient-v0_61]
+link:doc/download.html[Download]
 
 ### Make the ISO image
 Based on Fedora 24 LXDE
