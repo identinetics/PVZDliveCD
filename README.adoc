@@ -1,4 +1,8 @@
 # PVZD Live CD
+:numbered:
+:toc:
+:toc-placement: macro
+:toc-title: Inhaltsverzeichnis
 
 ## Purpose
 This is a secure boot environment for X11-applications deployed via docker.
@@ -38,7 +42,7 @@ Based on Fedora 24 LXDE Spin
 https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_61.iso[livecd-pvzdclient-v0_61]
 
 ### Make the ISO image
-Based on Fedora 24 LXDE Spin
+Based on Fedora 24 LXDE
 
 ####Install build environment
 * Fedora 24 required
