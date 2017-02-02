@@ -50,19 +50,13 @@ rm -rf /usr/share/applications/liveinst.desktop
 
 #Show Docker scripts on the Desktop
 mkdir -p /home/liveuser/Desktop
-cp /usr/share/applications/docker-app1.desktop /home/liveuser/Desktop
-cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/Desktop
-cp /usr/share/applications/dockerterminal.desktop /home/liveuser/Desktop
-cp /usr/share/applications/initusbdrive.desktop /home/liveuser/Desktop
+cp /usr/share/applications/?.desktop /home/liveuser/Desktop
 
 #Autostart Docker scripts
 mkdir -p /home/liveuser/.config/autostart
-cp /usr/share/applications/docker-app1.desktop /home/liveuser/.config/autostart
-cp /usr/share/applications/dockerapp-mon.desktop /home/liveuser/.config/autostart
-cp /usr/share/applications/initusbdrive.desktop /home/liveuser/.config/autostart
+cp /usr/share/applications/*.desktop /home/liveuser/.config/autostart
 
 ##LX Terminal hide menubar (replaced by Xfce4-terminal: LX-terminal is hard to customize)
-#cp /usr/share/applications/lxterminal.desktop /home/liveuser/.config/autostart
 #mkdir -p /home/liveuser/.config/lxterminal
 #cp -p /usr/local/doc/pvzd/lxterminal.conf /home/liveuser/.config/lxterminal/
 ##sed doesn't work here

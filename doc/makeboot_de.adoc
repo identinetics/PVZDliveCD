@@ -1,0 +1,19 @@
+# Boot-Medium erstellen
+
+## Download
+
+link:doc/download.adoc[ISO-Image herunterladen]
+
+## Kopieren
+
+Das ISO image wird auf das Boot Device kopiert, z.B.:
+
+    // Linux insert USB-stick into hardware
+    dmesg | tail  # check the the device name of the USB-drive
+    dd if=livecd-PVZDliveCD-Fedora24-lxde-Remix-<imageid>.iso of=/dev/<usb-drive>
+
+    // Mac SX (dd dead slow if not using rdisk; block size needs _lowercase m):
+    sudo dd bs=1m if=livecd-centos-7-gnome-docker-pvzdclient-v0_32.iso  of=/dev/rdisk2
+
+    // Für Windows gibt es eine große Anzahl von Tools um ein ISO-Image zu kopieren
+

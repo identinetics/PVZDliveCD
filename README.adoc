@@ -1,12 +1,10 @@
 # PVZD Live CD
 :numbered:
 :toc:
-:toc-placement: macro
-:toc-title: Inhaltsverzeichnis
 
 ## Purpose
 This is a secure boot environment for X11-applications deployed via docker.
-The PVZD Live CD comes with a LXDE desktop based on Fedora 24 and is booting automatically
+The PVZD LiveCD comes with an LXDE desktop based on Fedora 24 and is booting automatically
 into a predefined docker image. Docker data and the container user's home 
 are stored on a device with a writeable filesystem. The device is tagged 
 with a filename in the root directory for auto-discovery at boot time.
@@ -32,46 +30,12 @@ There are currently 2 docker images supporting this LiveCD:
      and create a call script at /tmp/startapp_inv.sh.
  ** Execute /tmp/startapp_inv.sh. This will pull and run the docker container. 
 
-## Get or make the boot image
+## Prepare the boot device
 
-You may either download the image or build it yourself.
+### Download or build
 
-### Download the ISO image
-
-link:doc/download.html[Download]
-
-### Make the ISO image
-Based on Fedora 24 LXDE
-
-####Install build environment
-* Fedora 24 required
-
-    sudo dnf install livecd-tools
-    cd <path to contain project>
-    git clone identinetics/PVZDliveCD
-    cd PVZDliveCD
-    PROJ_HOME=$PWD
-    echo $PWD > PROJHOMEvar
-    mkdir livecache
-
-#### Configure, build and initialize boot device
-
-- Set the DOCKER_IMAGE to be executed in install/scripts/startapp.sh
-- Build the ISO image:
-
-* before you run the build.sh ensure your SELinux is permissive
-
-    sudo sestatus
-* If the output on Current mode: is enforcing
-    sudo setenforce permissive
-
-Then run the build.sh in <path to contain project>
-    sh build.sh
-
-Get a tee or two, it takes some time
-
-After the build is finished, don't forget to enable your SELinux again
-    sudo setenforce enforcing
+- link:doc/download.adoc[Download the pre-build image]
+- link:doc/build.adoc[Build from source]
 
 ### Copy to boot device
 - Copy the ISO image to your boot device (DVD or USB Flash >= 1GB), e.g. like this:

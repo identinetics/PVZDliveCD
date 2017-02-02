@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=PVZDclient PAtool
+Comment=PVZDclient PAtool (CLI in Docker App)
+Keywords=shell;prompt;command;commandline;
+Exec=/usr/bin/xfce4-terminal -T PVZD-Client --hide-menubar -e /usr/local/bin/dockerterm-PAtool.sh
+Icon=utilities-terminal
+Type=Application
+
+Hidden=false
+NoDisplay=false
+Name[en_US]=PVZDclient-PAtool-terminal.desktop

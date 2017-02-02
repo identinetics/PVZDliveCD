@@ -4,11 +4,11 @@
 
 - Man benötigt 2 Speichermedien:
 
-    1. Das Boot-Medium mit dem LiveCD Image (sollte read-only sein, z.B. DVD-R), und
+    1. Das Boot-Medium mit dem LiveCD Image (sollte read-only sein, z.B. DVD-R oder USB-Stick mit Schreibschutz), und
     2. ein beschreibbares Daten-Medium, groß genug für ein Docker Image, Arbeits- und
        Konfigurationsdateien. (Empfohlene Größe >= 8GB.)
 
-- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:../README.adoc[README])
+- Das Boot-Medium muss mit dem LiveCD ISO-Image bespielt werden (siehe link:makeboot_de.adoc[README])
 - Das leere Daten-Medium wird mit FAT (FAT32, nicht EXFAT) formatiert (z.B. mit Windows).
 - Beim Start der LiveCD wird die Meldung 'Data medium not found' angezeigt. Entsprechend der
   angezeigten Anleitung wird das Daten-Medium dann initialisiert. Anmerkung: Es darf nur

@@ -1,0 +1,34 @@
+# Build the liveCD
+
+Make the ISO image (based on Fedora LXDE)
+
+####Install build environment
+* Fedora 24 required
+
+    sudo dnf install livecd-tools
+    cd <path to contain project>
+    git clone identinetics/PVZDliveCD
+    cd PVZDliveCD
+    PROJ_HOME=$PWD
+    echo $PWD > PROJHOMEvar
+    mkdir livecache
+
+#### Configure, build and initialize boot device
+
+- Set the DOCKER_IMAGE to be executed in install/scripts/startapp.sh
+- Build the ISO image:
+
+* before you run the build.sh ensure your SELinux is permissive
+
+    sudo sestatus
+* If the output on Current mode: is enforcing
+    sudo setenforce permissive
+
+Then run the build.sh in <path to contain project>
+    sh build.sh
+
+Get a tee or two, it takes some time
+
+After the build is finished, don't forget to enable your SELinux again
+    sudo setenforce enforcing
+

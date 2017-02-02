@@ -1,0 +1,3 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 kalypso kalypso.local vm  
+#127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 kalypso kalypso.local vm  ds.test.portalverbund.gv.at  ds.test.wpv.portalverbund.at  idp1.test.wpv.portalverbund.at  mdfeed.test.portalverbund.gv.at  mdfeed.test.wpv.portalverbund.at  mdval.test.portalverbund.at  sp1.test.wpv.portalverbund.at  weblog.test.wpv.portalverbund.at  www.test.portalverbund.gv.at  www.test.wpv.portalverbund.at 
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6

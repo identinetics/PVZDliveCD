@@ -11,8 +11,8 @@ counter=0
 
 
 
-while [ $counter -lt 40 ]; do
-    sleep 3
+while [ $counter -le 12 ]; do
+    sleep 5
     if [ "$CONTAINER_IS_UP" == "true" ]; then
       notify-send "Starting Docker Container Terminal"
       logger -p local0.info -t "local0" "Starting Docker Container Terminal"
@@ -21,7 +21,7 @@ while [ $counter -lt 40 ]; do
     else
       CONTAINER_IS_UP=$($sudo docker inspect -f {{.State.Running}} $CONTAINERNAME 2>/dev/null)
       counter=$[ counter +1 ]
-      logger -p local0.info -t "local0" "$counter. Try to start Docker Container Terminal"
+      logger -p local0.info -t "local0" "$counter. Waiting for Docker app to start before opening terminal session"
     fi
 done
 

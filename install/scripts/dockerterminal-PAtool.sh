@@ -7,4 +7,4 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 clear
-$sudo docker exec -it $CONTAINERNAME /exec_app.sh
+$sudo docker exec -it $CONTAINERNAME /exec_patool.sh
