@@ -1,5 +1,7 @@
 # Test Cases
 
+Test if the application is starting as expected in different configurations.
+
 |===
 |#|case
 |1|virgin USB, FAT fs
