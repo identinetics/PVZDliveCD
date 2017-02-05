@@ -19,7 +19,7 @@ kernel-modules-extra
 
 anaconda
 #@anaconda-tools
--system-config-keyboard
+#system-config-keyboard
 
 # Need aajohan-comfortaa-fonts for the SVG rnotes images
 aajohan-comfortaa-fonts
@@ -58,7 +58,7 @@ glibc-all-langpacks
 @networkmanager-submodules
 
 midori
-system-config-network
+#system-config-network
 xfce4-terminal
 
 #Docker
