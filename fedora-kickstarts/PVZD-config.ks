@@ -1,25 +1,3 @@
-%post --nochroot
-
-# get source dir
-read PROJHOME < PROJHOMEvar
-echo "PROJHOME is $PROJHOME"
-
-# autostart apps and scripts
-cp -p $PROJHOME/install/autostart/*.desktop $INSTALL_ROOT/usr/share/applications/
-cp -ar $PROJHOME/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
-chmod a+x $INSTALL_ROOT/usr/local/bin/*.sh
-mkdir -p $INSTALL_ROOT/usr/local/doc/pvzd
-
-#configure sudoers
-cp -ar $PROJHOME/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
-chown root:root $INSTALL_ROOT/etc/sudoers.d/predocker
-
-# default theme for xfce4-terminal windows
-mkdir -p $INSTALL_ROOT/usr/share/applications/xfce4/terminal
-cp -p $PROJHOME/install/xfce4-terminal-config/terminalrc $INSTALL_ROOT/usr/share/applications/xfce4/terminal/
-
-%end
-
 %post
 # LXDE and LXDM configuration
 
@@ -48,13 +26,20 @@ FOE
 sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
 rm -rf /usr/share/applications/liveinst.desktop
 
-#Show Docker scripts on the Desktop
-mkdir -p /home/liveuser/Desktop
-cp /usr/share/applications/?.desktop /home/liveuser/Desktop
+# Remove unwanted apps in autostart and desktop
+#rm -f /home/liveuser/Desktop/*.desktop
+#rm -f /home/liveuser/.config/autostart/*.desktop
 
-#Autostart Docker scripts
-mkdir -p /home/liveuser/.config/autostart
-cp /usr/share/applications/*.desktop /home/liveuser/.config/autostart
+# Add autostart
+mkdir -p /home/liveuser/.config/autostart/
+cp /opt/install/autostart-and-desktop/*.desktop /home/liveuser/.config/autostart/
+cp /opt/install/autostart-hidden/*.desktop /home/liveuser/.config/autostart/
+
+# Add desktop shortcuts
+mkdir -p /home/liveuser/Desktop
+cp /opt/install/autostart-and-desktop/*.desktop /home/liveuser/Desktop/
+cp /opt/install/desktop-no-autostart/*.desktop /home/liveuser/Desktop/
+cp /usr/share/applications/midori.desktop /home/liveuser/Desktop/
 
 ##LX Terminal hide menubar (replaced by Xfce4-terminal: LX-terminal is hard to customize)
 #mkdir -p /home/liveuser/.config/lxterminal
@@ -72,7 +57,7 @@ cp -p /usr/share/applications/xfce4/terminal/terminalrc /home/liveuser/.config/x
 mkdir -p /mnt/docker
 sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
 
-# create default config for clipit, otherwise it displays a dialog on startup
+# create default config for clipit to suppress the dialog on startup
 mkdir -p /home/liveuser/.config/clipit
 cat > /home/liveuser/.config/clipit/clipitrc  << FOE
 [rc]

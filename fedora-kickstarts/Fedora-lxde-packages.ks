@@ -19,7 +19,7 @@ kernel-modules-extra
 
 anaconda
 #@anaconda-tools
-#system-config-keyboard
+#-system-config-keyboard    # disappeared from repe on 2017-02-02
 
 # Need aajohan-comfortaa-fonts for the SVG rnotes images
 aajohan-comfortaa-fonts
@@ -58,7 +58,7 @@ glibc-all-langpacks
 @networkmanager-submodules
 
 midori
-#system-config-network
+# system-config-network  # disappeared from repe on 2017-02-02
 xfce4-terminal
 
 #Docker

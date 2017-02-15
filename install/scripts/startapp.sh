@@ -48,7 +48,7 @@ function run_docker_container {
         $sudo docker rm $CONTAINERNAME
     fi
 
-    $DATADIR/checkcontainerup.sh &
+    # $DATADIR/checkcontainerup.sh &  # use this to spawn a terminal session during startup
 
     ENVSETTINGS="
         -e DISPLAY=$DISPLAY

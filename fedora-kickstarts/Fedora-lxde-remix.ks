@@ -33,10 +33,11 @@ url --mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-update
 
 # === modify the LiveCD's content after packages have been installed ===
 
-%include Fedora24-lxde-packages.ks
-%include Fedora24-post-fixme.ks
+%include Fedora-lxde-packages.ks
+%include Fedora-post-fixme.ks
 %include liveCD-iso-to-disk.ks
-%include PVZD-docker-app.ks
+%include PVZD-copy-from-buildenv.ks
+%include PVZD-config.ks
 
 # === Rebranding & license ===
 

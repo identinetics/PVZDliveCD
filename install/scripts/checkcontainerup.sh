@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# wait until container named in $CONTAINERNAME is ready (return 0), or return 1 after timeout
+
 if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
@@ -16,7 +18,6 @@ while [ $counter -le 12 ]; do
     if [ "$CONTAINER_IS_UP" == "true" ]; then
       notify-send "Starting Docker Container Terminal"
       logger -p local0.info -t "local0" "Starting Docker Container Terminal"
-      $sudo /usr/bin/xfce4-terminal -T PVZD-Client --hide-menubar -e /usr/local/bin/dockerterminal.sh
       exit 0
     else
       CONTAINER_IS_UP=$($sudo docker inspect -f {{.State.Running}} $CONTAINERNAME 2>/dev/null)
@@ -24,5 +25,7 @@ while [ $counter -le 12 ]; do
       logger -p local0.info -t "local0" "$counter. Waiting for Docker app to start before opening terminal session"
     fi
 done
+
+exit 1
 
 

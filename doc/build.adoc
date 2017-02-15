@@ -2,18 +2,16 @@
 
 Make the ISO image (based on Fedora LXDE)
 
-####Install build environment
-* Fedora 24 required
+## Install build environment
+* Fedora 24 or CentOS 7 required
 
     sudo dnf install livecd-tools
     cd <path to contain project>
     git clone identinetics/PVZDliveCD
     cd PVZDliveCD
-    PROJ_HOME=$PWD
-    echo $PWD > PROJHOMEvar
-    mkdir livecache
+    ./build.sh
 
-#### Configure, build and initialize boot device
+## Configure, build and initialize boot device
 
 - Set the DOCKER_IMAGE to be executed in install/scripts/startapp.sh
 - Build the ISO image:

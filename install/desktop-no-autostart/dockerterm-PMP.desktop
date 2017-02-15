@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=PVZDclient PMP
-Comment=PVZDclient PMP (CLI in Docker App)
+Name=PMP
+Comment=PVZDclient PAtool (CLI in Docker App)
 Keywords=shell;prompt;command;commandline;
 Exec=/usr/bin/xfce4-terminal -T PVZD-Client --hide-menubar -e /usr/local/bin/dockerterm-PMP.sh
 Icon=utilities-terminal
