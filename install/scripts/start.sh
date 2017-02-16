@@ -1,28 +1,26 @@
 #!/bin/bash
 
-# format debug output if using bash -x
+# execute predocker.sh a few times hoping to find a data volume; if successful run startapp.sh
+
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
-notify-send "Looking for Data medium" -t 3000
-logger -p local0.info -t  "local0"  "Looking for Docker data medium"
-sleep 3
-notify-send "waiting for auto-mounting of block devices to complete" -t 3000
+notify-send "waiting for auto-mounting of block devices to complete" -t 2000
 logger -p local0.info -t "local0" "waiting for auto-mounting of block devices to complete"
-sleep 3
+sleep 2
+
 for i in {4..0}; do
   sudo /usr/local/bin/predocker.sh >> /tmp/predocker.log 2>&1
   retval=$?
   if [ $retval -eq 0 ]; then
-
     break
   else
     zenity --error --text "If you have an initialized medium, please insert it, wait approximately 3 seconds and press OK.
 
         Otherwise, follow these steps:
-        a) Initialize a USB flash drive with a single FAT partition (on Windows, Mac, etc.)
+        a) Initialize a USB flash drive with a single FAT32 partition (on another system, can be Windows, Mac, etc.)
         b) Plug in USB medium
         c) Start 'Init USB-Drive' with the desktop icon (or /usr/local/bin/init_usbdrive.sh)
-        d) press OK when done" --title "Data medium not found ($i tries left)"
+        d) press OK when done" --title "Data medium with 'UseMe4DockerData' not found ($i tries left)"
   fi
 done
 
