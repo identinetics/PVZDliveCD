@@ -8,6 +8,7 @@ echo "PROJHOME is $PROJHOME"
 # copy install dir to /opt for later distribution in chroot mode
 mkdir -p $INSTALL_ROOT/opt
 cp -r $PROJHOME/install $INSTALL_ROOT/opt/
+cp $PROJHOME/BUILD $INSTALL_ROOT/opt/
 
 # add app scripts
 cp -r $PROJHOME/install/scripts/*.sh $INSTALL_ROOT/usr/local/bin/
