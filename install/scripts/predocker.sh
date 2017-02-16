@@ -146,7 +146,9 @@ if [ -z "$mark_dir" ]; then
   xfer_dir=$(find_and_remount_xfer_dir_by_filelist "/tmp/mounted_dirs1")
   if [ "$ret_val" -eq "0" ]; then
     setup_all
-    exit 0
+  else
+    logger -p local0.info -t "local0" -s "Data dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
+    exit 1
   fi
 
   logger -p local0.info -t "local0" -s "predocker.sh: trying to mount not yet mounted devices (see /tmp/mounted_dirs2)"
@@ -156,9 +158,9 @@ if [ -z "$mark_dir" ]; then
   xfer_dir=$(find_and_remount_xfer_dir_by_filelist "/tmp/mounted_dirs2")
   if [ "$ret_val" -eq "0" ]; then
     setup_all
-    exit 0
+  else
+    logger -p local0.info -t "local0" -s "TRANSFER dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
+    exit 1
   fi
 
-  logger -p local0.info -t "local0" -s "Data dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
-  exit 1
 fi

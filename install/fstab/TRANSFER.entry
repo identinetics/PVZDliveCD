@@ -1,0 +1,3 @@
+
+# mount with correct uid/gid for VFAT file system
+LABEL=TRANSFER /mnt  vfat  uid=1000,gid=1000  0  2

@@ -77,6 +77,10 @@ cat > /etc/sudoers.d/privacy <<FOE
 Defaults    lecture = never
 FOE
 
+# add mountpoint for TRANSFER data volume (to set correct uid/gid for VFAT file system)
+cat /opt/install/fstab/TRANSFER.entry >> /etc/fstab
+
+
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser
 

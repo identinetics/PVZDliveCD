@@ -28,7 +28,7 @@ if [ $(id -u) -ne 0 ]; then
     sudo="sudo"
 fi
 
-[[ "$DOCKER_IMAGE" =~ /(.+)$ ]] &&  CONTAINERNAME=${BASH_REMATCH[1]}
+CONTAINERNAME=$(echo $DOCKER_IMAGE | sed -e 's/^.*\///; s/:.*$//')   # remove repo/ and :tag
 logger -p local0.info -t "local0" "setting up export containername script"
 echo '#!/bin/bash' > /tmp/set_containername.sh
 echo "export CONTAINERNAME=$CONTAINERNAME" >> /tmp/set_containername.sh
@@ -57,6 +57,7 @@ function run_docker_container {
         -e HTTP_PROXY=$HTTP_PROXY
         -e HTTPS_PROXY=$HTTPS_PROXY
         -e no_proxy=$no_proxy
+        -e LIVECD_BUILD=$(cat /opt/BUILD 2>/dev/null)
     "
     LOGSETTINGS='--log-driver=journald --log-opt tag="local0" '
     mkdir -p $XFERDIR
