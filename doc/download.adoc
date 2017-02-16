@@ -1,3 +1,4 @@
 = Download
 
+https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build76.iso[livecd-pvzdclient-v0_76]
 https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_61.iso[livecd-pvzdclient-v0_61]
