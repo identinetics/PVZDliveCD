@@ -2,7 +2,7 @@
 
 ## Download
 
-link:doc/download.adoc[ISO-Image herunterladen]
+link:download.adoc[ISO-Image herunterladen]
 
 ## Kopieren
 
