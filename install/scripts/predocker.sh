@@ -176,4 +176,4 @@ function  mount_not_yet_mounted_disks {
 }
 
 
-main
+main $@

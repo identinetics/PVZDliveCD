@@ -2,29 +2,20 @@
 
 
 function main {
-    get_opts
-
-    if [ $(id -u) -ne 0 ]; then
-        sudo="sudo"
-    fi
-
+    get_opts $@
+    init_sudo
     source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
     source $DATADIR/set_docker_image.sh >> /tmp/startapp.log 2>&1
     set_container_name
-
-    #Check if docker image exists
-    IMAGE=$($sudo docker images | grep $DOCKER_IMAGE |  awk '{print $3}')
-    if [[ -z $IMAGE ]]; then
-        pull_image
-        if [ "$?" -ne 0 ]; then
-            logger -p local0.info -t "local0" "Docker image $DOCKER_IMAGE could not be downloaded"
-            exit 1
-        fi
-    else
-       logger -p local0.info -t "local0" "Local Docker image $DOCKER_IMAGE found"
-       update_image_if_online
-    fi
+    pull_or_update_image_if_online
     run_docker_container
+}
+
+
+function init_sudo {
+    if [ $(id -u) -ne 0 ]; then
+        sudo="sudo"
+    fi
 }
 
 
@@ -36,23 +27,32 @@ function set_container_name {
 }
 
 
+function pull_or_update_image_if_online {
+    IMAGE=$($sudo docker images | grep $DOCKER_IMAGE |  awk '{print $3}')
+    if [[ -z $IMAGE ]]; then
+        pull_image
+        if [ "$?" -ne 0 ]; then
+            logger -p local0.info -t "local0" "Docker image $DOCKER_IMAGE could not be downloaded"
+            exit 1
+        fi
+    else
+       logger -p local0.info -t "local0" "Local Docker image $DOCKER_IMAGE found"
+       update_image_if_online
+    fi
+}
+
+
 function get_opts {
     runopt='-it'
     while getopts ":hpt" opt; do
       case $opt in
-        t)
-          runopt='-i'
-          ;;
-        p)
-          print="True"
-          ;;
-        *)
-          echo "usage: $0 [-h] [-p] [-t]
+        t) runopt='-i';;
+        p) print="True";;
+        *) echo "usage: $0 [-h] [-p] [-t]
                -h  print this help text
                -t  do not attach tty (used to call from nested shells, e.g. gnome autostart)
                -p  print docker run command on stdout"
-          exit 0
-          ;;
+          exit 0;;
       esac
     done
     shift $((OPTIND-1))
@@ -138,7 +138,7 @@ function run_docker_container {
     VOLMAPPING="
         --privileged -v /dev/bus/usb:/dev/bus/usb
         -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
-        -v $DATADIR:/home/liveuser:Z
+        -v $DATADIR/home/liveuser:/home/liveuser:Z
         -v $XFERDIR:/transfer:Z
      "
 
@@ -154,4 +154,4 @@ function run_docker_container {
 }
 
 
-main
+main $@
