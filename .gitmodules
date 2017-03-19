@@ -1,0 +1,3 @@
+[submodule "install/scripts/dscripts"]
+	path = install/scripts/dscripts
+	url = https://github.com/identinetics/dscripts.git
