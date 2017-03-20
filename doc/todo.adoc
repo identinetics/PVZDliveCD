@@ -5,10 +5,8 @@ Die PVZDLiveCD ist ein gegen Manipulationen geschütztes Live-System, beschränk
 und einen Docker-Container zu starten. Das Augenmerk liegt hier darauf, den Rechner vor Angriffen und
 Manipulationen zu schützen. Das Livemedium soll für diesen Zweck ein schreibgeschütztes USB-Volume sein.
 
-Die aktuelle Version wurde auf CentOS7 aufgebaut. GNOME ist aber eher schwerfällig und außerdem gibt
-seit eingier Zeit es das Problem, dass wenige Minuten nach dem Start das System extrem langsam wird
-oder überhaupt einfriert (Autoupdate durch packagekitd?). Außerdem ist die Anzeige von Messages im
-Notification Center schlecht gelöst (vor allem wenn eine Message kein Icon hat).
+Die aktuelle Version wurde auf Fedora/LXDE aufgebaut, um das System von der Hardware-Anforderungen
+schlank zu halten und auch von einer CD booten zu können.
 
 ## Optimierungsziele
 

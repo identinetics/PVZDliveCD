@@ -8,6 +8,7 @@ function main {
     source $DATADIR/set_docker_image.sh >> /tmp/startapp.log 2>&1
     set_container_name
     pull_or_update_image_if_online
+    verify_docker_image
     run_docker_container
 }
 
@@ -104,6 +105,20 @@ function update_image_if_online {
         zenity --info --text "Not checking for docker image update"  --title "OFFLINE - No Internet Connection"
         notify-send "Not checking for  docker image update - OFFLINE" -t 3000
         logger -p local0.info -t "local0" "Not checking for docker image update - OFFLINE"
+    fi
+}
+
+
+function verify_docker_image {
+    cd /usr/local/bin
+    ./setup_gpg_trust.sh
+    ./dscripts/verify.sh -V
+    if (($? > 0)); then
+        zenity --info --text "Verification of signature for docker image failed. Cannot proceed with start"  --title "Image verification failed"
+        notify-send "Verification of signature for docker image failed" -t 3000
+        logger -p local0.info -t "local0" "Verification of signature for docker image failed."
+    else
+        logger -p local0.info -t "local0" "Docker image verified."
     fi
 }
 

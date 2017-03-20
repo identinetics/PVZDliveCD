@@ -3,6 +3,7 @@
 # execute predocker.sh a few times hoping to find a data volume; if successful run startapp.sh
 
 main() {
+    echo "starting $0" >> /tmp/startapp.log
     wait_for_automount_completion
     find_docker_data_medium
     start_default_application
@@ -13,7 +14,7 @@ export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 wait_for_automount_completion() {
     notify-send "Waiting for auto-mounting of block devices to complete" -t 6000
     logger -p local0.info -t "local0" "waiting for auto-mounting of block devices to complete"
-    sleep 6  # 6s turned out to be reliable on VM and bare HW used for development
+    sleep 9  # 6s turned out to be not enough on some HW
 }
 
 
