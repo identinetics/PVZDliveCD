@@ -1,0 +1,11 @@
+= Add another Image
+
+To use the LiveCD with other docker images proceed like this:
+
+- Start with on of the existing images
+- To start into a GUI app set LABEL no_tty="True"
+- Startup:
+  ** Desktop and autostart items are not dynamically adapted, but the default startup
+     can be set in $DATADIR/set_docker_image.sh.
+  ** For an auto-startup into another container than PCZDclient and other desktop items
+     you have to fork PVZDliveCD

@@ -22,6 +22,9 @@ mkdir -p $INSTALL_ROOT/usr/local/doc/pvzd
 cp -r $PROJHOME/install/sudoers.d/predocker $INSTALL_ROOT/etc/sudoers.d/predocker
 chown root:root $INSTALL_ROOT/etc/sudoers.d/predocker
 
+#configure profile.d
+cp -r $PROJHOME/install/profile.d/* $INSTALL_ROOT/etc/profile.d/
+
 # default theme for xfce4-terminal windows
 mkdir -p $INSTALL_ROOT/usr/share/applications/xfce4/terminal
 cp -p $PROJHOME/install/xfce4-terminal-config/terminalrc $INSTALL_ROOT/usr/share/applications/xfce4/terminal/
