@@ -5,74 +5,59 @@
 # This script searches for a device having a mark file in the path of the mount point. If found
 # (or passed via cl arg) it changes the docker daemon's and app' start options accordingly.
 # If not found it exits with return code 1.
-# The script also searches for an optional transfer medium (to offer a vfat mount instead of ext4)
+# The script also searches for an optional transfer medium (to provide a vfat mount instead of ext4)
 
 # format debug output if using bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 
-function main {
-    mark_filename="UseMe4DockerData"
-    mark_filename2="UseMe4Transfer"
+main() {
+    mark_datadir="UseMe4DockerData"
+    mark_xferdir="UseMe4Transfer"
 
-    search_datadir_on_mounted_volumes
-    ret_val=$?
-    if [ "$ret_val" -ne "0" ]; then
-        search_datadir_on_not_yet_mounted_volumes
-        ret_val=$?
-        if [ "$ret_val" -ne "0" ]; then
-            logger -p local0.info -t "local0" -s "predocker.sh: no datadir found"
-            exit 1
-        fi
+    data_dir=$(search_for_filesystem_with_markfile $mark_datadir)
+    xfer_dir=$(search_for_filesystem_with_markfile $mark_xferdir)
+    if (( $? != 0 )); then
+        logger -p local0.info -t "local0" -s "No separate file system for transfer dir found. Setting it to $data_dir/transfer"
+        xfer_dir="$data_dir/transfer"
+        mkdir -p $xfer_dir
+    else
+        mkdir -p /mnt/xfer
+        remount_filesystem $xfer_dir /mnt/xfer
     fi
-
+    create_exportenv_script $data_dir $xfer_dir
+    
     set_http_proxy_config
     patch_dockerd_config $data_dir
     set_docker_image_script $data_dir
     checkcontainerup_script $data_dir
-
-    search_xferdir_on_mounted_volumes  # by now everybody should be mounted
-    if [ -z "$xfer_dir" ]; then
-        logger -p local0.info -t "local0" -s "No separate device for transfer dir found. Setting it to $DATADIR/transfer"
-        xfer_dir="$data_dir/transfer"
-    fi
-
-    create_exportenv_script $data_dir $xfer_dir
 }
 
 
-function search_datadir_on_mounted_volumes {
-    logger -p local0.info -t "local0" -s "predocker.sh: Searching datadir in mounted devices (see /tmp/mounted_dirs1)"
-    get_mounted_disks
-    data_dir=$(find_data_dir_by_filelist "/tmp/mounted_dirs1")
+search_for_filesystem_with_markfile() {
+    markfile=$1
+    logger -p local0.info -t "local0" -s "predocker.sh: Searching $markfile in mounted devices (see /tmp/mounted_filesystems)"
+    get_mounted_filesystems
+    marked_filesystem=''
+    marked_filesystem=$(find_data_dir_by_filelist "mounted_filesystems" $markfile)
+    if (( $? != 0 )); then
+        mount_offline_filesystems
+        get_mounted_filesystems
+        marked_filesystem=$(find_data_dir_by_filelist "mounted_filesystems" $markfile)
+        if (( $? == 0 )); then
+            setup_with_datadir
+        else
+            logger -p local0.info -t "local0" -s "Datadir dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
+            exit 2
+        fi
+    fi
+    echo $marked_filesystem
     return $?
 }
 
 
-function search_datadir_on_not_yet_mounted_volumes {
-    logger -p local0.info -t "local0" -s "predocker.sh: Searching datadir in not yet mounted devices (see /tmp/mounted_dirs2)"
-    mount_not_yet_mounted_disks
-    data_dir=$(find_data_dir_by_filelist "/tmp/mounted_dirs2")
-    if [ "$ret_val" -eq "0" ]; then
-        setup_with_datadir
-    else
-        logger -p local0.info -t "local0" -s "Datadir dir not found. Mount device and set it as parameter: /usr/local/bin/predocker.sh -d docker_data_directory"
-        exit 2
-    fi
-}
-
-
-function search_xferdir_on_mounted_volumes {
-    logger -p local0.info -t "local0" -s "predocker.sh: Searching transferdir in mounted devices (see /tmp/mounted_dirs1)"
-    get_mounted_disks
-    xfer_dir=$(find_and_remount_xfer_dir_by_filelist "/tmp/mounted_dirs1")
-    ret_val=$?
-    return $ret_val
-}
-
-
-function set_http_proxy_config {
-    if [ ! -e '/$dockerdata_dir/set_httpproxy.sh' ]; then
+set_http_proxy_config() {
+    if [[ ! -e '/$dockerdata_dir/set_httpproxy.sh' ]]; then
         logger -p local0.info -t "local0"  "predocker.sh: copying default http proxy config"
         cp -n /usr/local/bin/set_httpproxy.sh $data_dir/
         chmod +x /$data_dir/set_httpproxy.sh
@@ -82,7 +67,7 @@ function set_http_proxy_config {
 }
 
 
-function patch_dockerd_config {
+patch_dockerd_config() {
     systemctl stop docker
     dockerdata_dir=$1/docker
     mkdir -p $dockerdata_dir
@@ -96,7 +81,7 @@ function patch_dockerd_config {
 }
 
 
-function create_exportenv_script {
+create_exportenv_script() {
     data_dir=$1
     xfer_dir=$2
     xfer_dir=${xfer_dir:=$data_dir/transfer}
@@ -107,7 +92,7 @@ function create_exportenv_script {
 }
 
 
-function set_docker_image_script {
+set_docker_image_script() {
     # docker image is set in UseMe4DockerData dir
     # (easy to change script without touching the boot image)
     data_dir=$1
@@ -115,7 +100,7 @@ function set_docker_image_script {
 }
 
 
-function checkcontainerup_script {
+checkcontainerup_script() {
     # docker script is started from UseMe4DockerData dir
     # (easy to change script without touching the boot image)
     data_dir=$1
@@ -123,10 +108,11 @@ function checkcontainerup_script {
 }
 
 
-function find_data_dir_by_filelist {
+find_data_dir_by_filelist() {
     dir_list=`cat $1`
+    markfile=$2
     for dir in $dir_list; do
-        if [ -e "$dir/$mark_filename" ]; then
+        if [ -e "$dir/$markfile" ]; then
             echo $dir
             return 0
         fi
@@ -135,43 +121,37 @@ function find_data_dir_by_filelist {
     return 1
 }
 
-function find_and_remount_xfer_dir_by_filelist {
-    dir_list=`cat $1`
-    for dir in $dir_list; do
-        if [ -e "$dir/$mark_filename2" ]; then
-            xf_dir=$dir
-            #mount -o bind and mount -o remount do not work reliably -> unmount/mount
-            xf_dev=$(mount | grep $dir | awk '{print $1}')
-            umount $xf_dev
-            mount -o uid=1000,gid=1000 $xf_dev $xf_dir
-            echo $xf_dir
-            return 0
-        fi
-    done
-    logger -p local0.info -t "local0" -s "No transfer directory found in file list"
-    echo ''
-    return 1
+
+remount_filesystem() {
+    fs_old_path=$1
+    fs_new_path=$2
+    fs_device=$(mount | grep $fs_old_path | awk '{print $1}')
+    #mount -o bind and mount -o remount do not work reliably -> unmount/mount
+    umount $fs_device
+    mount -o uid=1000,gid=1000 $fs_device $fs_new_path
+    logger -p local0.info -t "local0" -s "Filesystem $fs_old_path remounted at $fsnew_path"
+    return 0
 }
 
 
-function  get_mounted_disks {
-    df | awk '{print $6}' | sort | uniq > /tmp/mounted_dirs1
+get_mounted_filesystems() {
+    df | awk '{print $6}' | sort | uniq > mounted_filesystems
 }
 
 
-function  mount_not_yet_mounted_disks {
+mount_offline_filesystems() {
     logger -p local0.info -t "local0" -s "predocker.sh: mount not mounted drives (see /tmp: mounted_disks, all_disks, notmounted_disks)"
     mount | cut -d\  -f 1 | sort | uniq > /tmp/mounted_disks
     lsblk -lp | grep part | cut -d\  -f 1 | sort > /tmp/all_disks
-    comm -13 /tmp/mounted_disks /tmp/all_disks > /tmp/notmounted_disks    #get needed
-    flist=`cat /tmp/notmounted_disks`
+    comm -13 /tmp/mounted_disks /tmp/all_disks > /tmp/notmounted_disks
+    flist=$(cat /tmp/notmounted_disks)
 
-    echo -n > /tmp/mounted_dirs2
-    #mount found disks and prepare file list
+    echo -n > /tmp/disks_tried_to_mount
+    # mount found disks
     for disk in $flist; do
         mkdir -p /mnt/${disk:5}
         mount $disk /mnt/${disk:5}
-        echo /mnt/${disk:5} >> /tmp/mounted_dirs2
+        echo /mnt/${disk:5} >> /tmp/disks_tried_to_mount
     done
 }
 
