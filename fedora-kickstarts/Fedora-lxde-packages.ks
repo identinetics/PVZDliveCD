@@ -42,8 +42,12 @@ glibc-all-langpacks
 -isdn4k-utils
 -autofs
 
-# smartcards won't really work on the livecd.
+# opensc seems to have broader card support than coolkey
 -coolkey
+pcsc-lite
+pcsc-tools
+usbutils
+opensc
 
 # scanning takes quite a bit of space :/
 -xsane

@@ -21,4 +21,4 @@ sudo livecd-creator -d -v  -c fedora-kickstarts/Fedora-lxde-remix.ks \
 mv livecd-Fedora-lxde-remix-*.iso PVZDliveCD-build$(cat BUILD).iso
 
 echo "build PVZDliveCD-build$(cat BUILD).iso"
-echo -n $(($(cat BUILD)+1))  > BUILD  # increment build number
+[[ "$1" == '--samebuild' ]] || echo -n $(($(cat BUILD)+1))  > BUILD  # increment build number

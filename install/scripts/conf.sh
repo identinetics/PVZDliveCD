@@ -4,6 +4,7 @@
 
 main() {
     echo "starting $0" >> /tmp/startapp.log
+    get_mount_points
     set_image_and_container_name
     set_image_signature_args
     init_sudo
@@ -12,8 +13,12 @@ main() {
 }
 
 
-set_image_and_container_name() {
+get_mount_points() {
     source /tmp/set_data_dir.sh >> /tmp/startapp.log 2>&1
+}
+
+
+set_image_and_container_name() {
     source $DATADIR/set_docker_image.sh >> /tmp/startapp.log 2>&1
     export IMAGENAME=$DOCKER_IMAGE
     export CONTAINERNAME=$(echo $DOCKER_IMAGE | sed -e 's/^.*\///; s/:.*$//')   # remove repo/ and :tag
@@ -37,7 +42,6 @@ init_sudo() {
 
 
 set_run_args() {
-    source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
     source $DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
     export ENVSETTINGS="
         -e DISPLAY=$DISPLAY
