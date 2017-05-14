@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 main() {
     get_opts $@
@@ -145,6 +145,7 @@ run_docker_container() {
     notify-send "starting docker image $DOCKER_IMAGE" -t 3000
     logger -p local0.info -t "local0" "starting docker image $DOCKER_IMAGE"
 
+    $sudo docker rm -f $CONTAINERNAME 2>/dev/null || true
     # $DATADIR/checkcontainerup.sh &  # use this to spawn a terminal session during startup
 
     runopt2="--rm --hostname=$CONTAINERNAME --name=$CONTAINERNAME $ENVSETTINGS $LOGSETTINGS $VOLMAPPING $DOCKER_IMAGE"
