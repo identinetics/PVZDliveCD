@@ -1,4 +1,5 @@
 #!/bin/bash
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 # execute predocker.sh a few times hoping to find a data volume; if successful run startapp.sh
 
@@ -8,7 +9,7 @@ main() {
     find_docker_data_medium
     start_default_application
 }
-export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
 
 
 wait_for_automount_completion() {

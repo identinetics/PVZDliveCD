@@ -68,7 +68,7 @@ pull_or_update_image_if_online() {
 
 
 update_image_if_online() {
-    wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
+    wget -q --tries=10 --timeout=20 --spider http://www.google.com/
     if [[ $? -eq 0 ]]; then
         notify-send "Online - Preparing download" -t 3000
         logger -p local0.info -t "local0" "Online preparing download"
@@ -102,13 +102,13 @@ get_latest_docker() {
 
 pull_image() {
     for i in {4..0}; do
-        wget -q --tries=10 --timeout=20 --spider http://www.identinetics.com/
+        wget -q --tries=10 --timeout=20 --spider http://www.google.com/
         if [[ $? -eq 0 ]]; then
             get_latest_docker
             return 0
         else
             zenity --error --text "Please connect (WiFi, LAN) or set http_proxy in $DATADIR/set_httpproxy.sh to download docker image" --title "No Internet connection detected! ($i tries left)"
-            notify-send "No Internet connection detected! ($i tries left)- please connect to download docker image" -t 3000
+            notify-send "No Internet connection detected (testing google.com! ($i tries left)- please connect to download docker image" -t 3000
             logger -p local0.info -t "local0" -s "No Internet connection detected! ($i tries left)- please connect"
         fi
     done
