@@ -1,4 +1,5 @@
 #!/bin/bash -x
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 # docker data like images, container and volumes need to reside in a writeable and persistent filesystem.
 # Therefore, /var/lib/docker needs to be replaces on a liveCD.
@@ -8,7 +9,6 @@
 # The script also searches for an optional transfer medium (to provide a vfat mount instead of ext4)
 
 # format debug output if using bash -x
-export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 
 main() {
@@ -39,11 +39,11 @@ search_for_filesystem_with_markfile() {
     logger -p local0.info -t "local0" -s "predocker.sh: Searching $markfile in mounted devices (see /tmp/mounted_filesystems)"
     get_mounted_filesystems
     marked_filesystem=''
-    marked_filesystem=$(find_data_dir_by_filelist "mounted_filesystems" $markfile)
+    marked_filesystem=$(find_data_dir_by_filelist "/tmp/mounted_filesystems" $markfile)
     if (( $? != 0 )); then
         mount_offline_filesystems
         get_mounted_filesystems
-        marked_filesystem=$(find_data_dir_by_filelist "mounted_filesystems" $markfile)
+        marked_filesystem=$(find_data_dir_by_filelist "/tmp/mounted_filesystems" $markfile)
         if (( $? == 0 )); then
             setup_with_datadir
         else
@@ -135,7 +135,7 @@ remount_filesystem() {
 
 
 get_mounted_filesystems() {
-    df | awk '{print $6}' | sort | uniq > mounted_filesystems
+    df | tail -n +2 | grep -v ^tmpfs | awk '{print $6}' | sort | uniq > /tmp/mounted_filesystems
 }
 
 
