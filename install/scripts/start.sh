@@ -5,12 +5,20 @@ export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 main() {
     echo "starting $0" >> /tmp/startapp.log
+    init_sudo
+    mount_ramdisk
     fix_gdk_pixbuf_warning
     wait_for_automount_completion
     find_docker_data_medium
     start_default_application
 }
 
+
+init_sudo() {
+    if (( $(id -u) != 0 )); then
+        sudo="sudo"
+    fi
+}
 
 
 wait_for_automount_completion() {
@@ -40,7 +48,7 @@ find_docker_data_medium() {
 
 
 start_default_application() {
-    if [ $retval -eq 0 ]; then
+    if (( $retval == 0 )); then
       notify-send  "Data medium found"  -t 3000
       source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
       source /$DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
@@ -53,7 +61,21 @@ start_default_application() {
 
 fix_gdk_pixbuf_warning() {
     # see https://ubuntuforums.org/showthread.php?t=2094298  etc.
-    gdk-pixbuf-query-loaders-64  > /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache
+    $sudo su - -c "gdk-pixbuf-query-loaders-64  > /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+}
+
+
+mount_ramdisk() {
+    if (( $(df | tail -n +2 | grep ^tmpfs | awk '{print $6}'| grep ^/ramdisk$) != 0 )); then
+        ramdisk_mounted='False'
+    fi
+    if [[ $ramdisk_mounted == 'False' ]]; then
+        $sudo mkdir -p /ramdisk
+        $sudo mount -t tmpfs -o size=10M tmpfs /ramdisk
+        cd /ramdisk
+        [[ $PWD != '/ramdisk' ]] && zenity --error --text "could not make or mount /ramdisk" && exit 1
+        echo "Created ramdisk at /ramdisk"
+    fi
 }
 
 
