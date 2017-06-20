@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 # initialize usb drive with 2 partitions (1 ext4: DockerData, 1 exFAT: transfer)
 # requires exactly 1 FAT-formatted drive to be mounted
@@ -55,7 +56,6 @@ find_FAT_formatted_blockdevice() {
 }
 
 
-
 partition_device() {
     # unmount all partitions of the device
     lsblk --list --path $FATROOTDEV | grep 'part' | awk '{print "umount " $1}' > /tmp/umount_vfat.sh
@@ -85,12 +85,13 @@ p
 w
 " | \
     $sudo fdisk $FATROOTDEV
+    $sudo partprobe
 }
 
 
 make_filesystems() {
     logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}1 (vfat)"
-    $sudo mkfs.vfat -n transfer "${FATROOTDEV}1"
+    $sudo mkfs.vfat -n TRANSFER "${FATROOTDEV}1"
     $sudo mkdir -p /mnt/transfer
     $sudo mount "${FATROOTDEV}1" /mnt/transfer
     $sudo touch /mnt/transfer/UseMe4Transfer
