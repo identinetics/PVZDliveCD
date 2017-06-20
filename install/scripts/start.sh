@@ -5,6 +5,7 @@ export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 main() {
     echo "starting $0" >> /tmp/startapp.log
+    fix_gdk_pixbuf_warning
     wait_for_automount_completion
     find_docker_data_medium
     start_default_application
@@ -47,6 +48,12 @@ start_default_application() {
     else
       notify-send "Data medium not found. Connect a medium (see doc) and run 'sudo /usr/local/bin/start.sh -d /dev/<my-data-drive>'" --timeout 3000
     fi
+}
+
+
+fix_gdk_pixbuf_warning() {
+    # see https://ubuntuforums.org/showthread.php?t=2094298  etc.
+    gdk-pixbuf-query-loaders-64  > /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache
 }
 
 
