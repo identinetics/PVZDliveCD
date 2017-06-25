@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LiveCD Status
+GenericName=Status Page
+Categories=GTK;Network;WebBrowser;
+MimeType=text/html;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/geo;image/svg+xml;
+Exec=midori -e TabNew --plain file:///tmp/status.html
+Icon=midori
+Terminal=false
+X-Osso-Type=application/x-executable
+X-Osso-Service=midori
+X-Desktop-File-Install-Version=0.22
+Comment=LiveCD Status Page

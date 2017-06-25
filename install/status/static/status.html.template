@@ -1,0 +1,14 @@
+<html>
+<head>
+    <meta http-equiv="refresh" content="3">
+    <title>PVZD LiveCD</title>
+    <link type="text/css" href="css/default.css" rel="Stylesheet" />
+</head>
+<body>
+    <h2 style="margin-bottom: 1em">LiveCD Status</h2>
+    <table class="pure-table">
+        <tr><td>Component</td><td>Status</td><td>Details</td></tr>
+        {{ Plugins }}
+    </table>
+
+</body>

@@ -131,18 +131,21 @@ metacity
 -ntfs*
 -tigervnc*
 
-#Fonts
+# Fonts
 liberation-mono-fonts
 
-#exFAT Support
+# exFAT Support
 fuse-exfat
 
-#CUPS printing with a larger selection of drivers, converters and Libreoffice as print helper
+# CUPS printing with a larger selection of drivers, converters and Libreoffice as print helper
 cups
 system-config-printer
 gutenprint-cups
 hplip
 ImageMagick
 libreoffice
+
+# Python 3 (Status scripts)
+python3
 
 %end

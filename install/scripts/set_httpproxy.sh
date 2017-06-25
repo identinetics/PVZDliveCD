@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash -x
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 # configure proxy settings
 # export http_proxy=http://10.203.0.1:3128/

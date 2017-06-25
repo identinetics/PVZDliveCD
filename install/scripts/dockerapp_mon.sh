@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/bin/bash -x
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 if [ $(id -u) -ne 0 ]; then
     sudo="sudo"

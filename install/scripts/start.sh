@@ -1,11 +1,11 @@
-#!/bin/bash
-export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+#!/usr/bin/env bash
 
-# execute predocker.sh a few times hoping to find a data volume; if successful run startapp.sh
 
 main() {
+    set_trace
     echo "starting $0" >> /tmp/startapp.log
     init_sudo
+    start_statusd
     mount_ramdisk
     fix_gdk_pixbuf_warning
     wait_for_automount_completion
@@ -14,10 +14,24 @@ main() {
 }
 
 
+set_trace() {
+    PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    mkdir -p /tmp/xtrace
+    exec 4>/tmp/xtrace/$(basename $0.log)
+    BASH_XTRACEFD=4
+    set -x
+}
+
+
 init_sudo() {
     if (( $(id -u) != 0 )); then
         sudo="sudo"
     fi
+}
+
+
+start_statusd() {
+    nohup /usr/local/bin/livecd_statusd.sh &
 }
 
 
@@ -32,7 +46,7 @@ find_docker_data_medium() {
     for i in {4..0}; do
       sudo /usr/local/bin/predocker.sh >> /tmp/predocker.log 2>&1
       retval=$?
-      if [ $retval -eq 0 ]; then
+      if (( $retval == 0 )); then
         break
       else
         zenity --error --text "If you have an initialized medium, please insert it, wait approximately 3 seconds and press OK.
@@ -51,7 +65,7 @@ start_default_application() {
     if (( $retval == 0 )); then
       notify-send  "Data medium found"  -t 3000
       source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
-      source /$DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
+      source $DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
       /usr/local/bin/startapp.sh -t >> /tmp/startapp.log 2>&1   # nested shell must not assign own tty! (search for docker exec -it returns “cannot enable tty mode on non tty input”
     else
       notify-send "Data medium not found. Connect a medium (see doc) and run 'sudo /usr/local/bin/start.sh -d /dev/<my-data-drive>'" --timeout 3000
@@ -66,15 +80,14 @@ fix_gdk_pixbuf_warning() {
 
 
 mount_ramdisk() {
-    if (( $(df | tail -n +2 | grep ^tmpfs | awk '{print $6}'| grep ^/ramdisk$) != 0 )); then
-        ramdisk_mounted='False'
-    fi
-    if [[ $ramdisk_mounted == 'False' ]]; then
-        $sudo mkdir -p /ramdisk
-        $sudo mount -t tmpfs -o size=10M tmpfs /ramdisk
-        cd /ramdisk
-        [[ $PWD != '/ramdisk' ]] && zenity --error --text "could not make or mount /ramdisk" && exit 1
-        echo "Created ramdisk at /ramdisk"
+    RAMDISKPATH="/ramdisk"
+    df -Th | tail -n +2 | egrep "tmpfs|ramfs" | awk '{print $7}'| grep ${RAMDISKPATH} >/dev/null
+    if (( $? != 0 )); then # ramfs not mounted at $RAMDISKPATH
+        $sudo mkdir -p ${RAMDISKPATH}/ramdisk
+        $sudo mount -t tmpfs -o size=1M tmpfs ${RAMDISKPATH}
+        cd ${RAMDISKPATH}
+        [[ $PWD != "$RAMDISKPATH" ]] && zenity --error --text "could not make or mount ${RAMDISKPATH}" && exit 1
+        echo "Created ramdisk at ${RAMDISKPATH}"
     fi
 }
 

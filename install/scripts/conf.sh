@@ -3,6 +3,7 @@
 # configuration for dscripts/verify.sh
 
 main() {
+    set_trace
     echo "starting $0" >> /tmp/startapp.log
     get_mount_points
     set_image_and_container_name
@@ -10,6 +11,15 @@ main() {
     init_sudo
     set_run_args
     set_vol_mapping
+}
+
+
+set_trace() {
+    PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    mkdir -p /tmp/xtrace
+    exec 4>/tmp/xtrace/$(basename $0.log)
+    BASH_XTRACEFD=4
+    set -x
 }
 
 
@@ -62,6 +72,7 @@ set_vol_mapping() {
         -v /tmp/.X11-unix/:/tmp/.X11-unix:Z
         -v $DATADIR/home/liveuser:/home/liveuser:Z
         -v $XFERDIR:/transfer:Z
+        -v /ramdisk:/ramdisk
      "
     $sudo mkdir -p $DATADIR/home/liveuser/
     $sudo chown -R liveuser:liveuser $DATADIR/home/liveuser/

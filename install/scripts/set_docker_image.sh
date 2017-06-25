@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash -x
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 export DOCKER_IMAGE='rhoerbe/pvzd-client-app:pr'
 

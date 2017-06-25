@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/bin/bash
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 source /tmp/set_containername.sh
 

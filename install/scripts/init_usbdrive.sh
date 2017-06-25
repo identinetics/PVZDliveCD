@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -x
 export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 # initialize usb drive with 2 partitions (1 ext4: DockerData, 1 exFAT: transfer)
@@ -98,7 +98,7 @@ make_filesystems() {
 
     # format and mark docker data partition
     logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}2 (ext4)"
-    $sudo mkfs.ext4 -L UseMe4DockerData "${FATROOTDEV}2"
+    $sudo mkfs.ext4 -L DockerData "${FATROOTDEV}2"
 }
 
 

@@ -78,8 +78,13 @@ Defaults    lecture = never
 FOE
 
 # add mountpoint for TRANSFER data volume (to set correct uid/gid for VFAT file system)
-cat /opt/install/fstab/TRANSFER.entry >> /etc/fstab
+cat /opt/install/etc/fstab/TRANSFER.entry >> /etc/fstab
 
+# install livecd_statusd
+cp -r /opt/install/status /usr/local/
+
+# Python3 packages
+pip3 install jinja2 pathlib
 
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser

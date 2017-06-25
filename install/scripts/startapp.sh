@@ -1,8 +1,8 @@
-#!/bin/bash
-export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+#!/usr/bin/env bash
 
 main() {
-    get_opts $@
+    set_trace
+    get_opts "$@"
     init_sudo
     get_container_config
     get_userdefined_settings
@@ -10,6 +10,15 @@ main() {
     verify_docker_image
     remove_existing_container
     run_docker_container
+}
+
+
+set_trace() {
+    PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    mkdir -p /tmp/xtrace
+    exec 4>/tmp/xtrace/$(basename $0.log)
+    BASH_XTRACEFD=4
+    set -x
 }
 
 

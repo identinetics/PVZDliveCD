@@ -3,12 +3,15 @@
 Test if the application is starting as expected in different configurations.
 
 |===
-|#|case
-|1|virgin USB, FAT fs
-|2|virgin USB, ext4
-|3|virgin USB, no recognized fs
-|4|USB mounted before predocker.sh, online
-|5|USB mounted after predocker.sh, online
-|6|#4 + offline, establish connection
-|7|#4 + offline, set http_proxy
+| # |case
+| 1 |virgin USB, FAT fs
+| 2 |virgin USB, ext4
+| 3 |virgin USB, no recognized fs
+| 4 |USB mounted before predocker.sh, online, initialized with 1 VFAT part.
+| 5 |USB mounted after predocker.sh, online
+| 6 |#4 + offline, establish connection
+| 7 |#4 + offline, set http_proxy
+| 8 |#4 + UseMe4DockerData does not exist
+| 9 |#4 + UseMe4Transfer does not exist
+|10 |
 |===
