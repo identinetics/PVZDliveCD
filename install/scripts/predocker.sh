@@ -14,8 +14,8 @@ main() {
     mark_datadir="UseMe4DockerData"
     mark_xferdir="UseMe4Transfer"
 
-    data_dir=$(search_for_filesystem_with_markfile $mark_datadir)
-    xfer_dir=$(search_for_filesystem_with_markfile $mark_xferdir)
+    data_dir=$(search_for_filesystem_with_markfile $mark_datadir) || exit $?
+    xfer_dir=$(search_for_filesystem_with_markfile $mark_xferdir) || exit $?
     create_exportenv_script $data_dir $xfer_dir
     
     set_http_proxy_config
@@ -57,11 +57,11 @@ search_for_filesystem_with_markfile() {
         if (( $? != 0 )); then
             logger -p local0.error -t "local0" -s "No separate file system marked with ${mark_xferdir} found."
             zenity --error --text "No separate file system marked with ${mark_xferdir} found. Container not started"
-            exit 1
+            return 1
         fi
     fi
     echo $marked_filesystem
-    return $?
+    return 0
 }
 
 

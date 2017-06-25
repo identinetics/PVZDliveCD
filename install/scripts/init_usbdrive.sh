@@ -1,16 +1,25 @@
-#!/bin/bash -x
-export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+#!/bin/bash
 
-# initialize usb drive with 2 partitions (1 ext4: DockerData, 1 exFAT: transfer)
-# requires exactly 1 FAT-formatted drive to be mounted
+# initialize usb drive with 2 partitions (1 vfat: transfer, 1 ext4: DockerData)
+# requires that exactly 1 FAT-formatted drive is mounted
 
 main() {
+    set_trace
     set_terminal_colors
     init_sudo
     find_FAT_formatted_blockdevice
     partition_device
     make_filesystems
     mark_UseMe4DockerData_partition
+}
+
+
+set_trace() {
+    PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    mkdir -p /tmp/xtrace
+    exec 4>/tmp/xtrace/$(basename $0.log)
+    BASH_XTRACEFD=4
+    set -x
 }
 
 

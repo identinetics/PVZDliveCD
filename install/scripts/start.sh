@@ -55,7 +55,8 @@ find_docker_data_medium() {
             a) Initialize a USB flash drive with a single FAT32 partition (on another system, can be Windows, Mac, etc.)
             b) Plug in USB medium
             c) Start 'Init USB-Drive' with the desktop icon (or /usr/local/bin/init_usbdrive.sh)
-            d) press OK when done" --title "Data medium with 'UseMe4DockerData' not found ($i tries left)"
+            d) reboot is recommended
+            e) press OK when done" --title "Data medium with 'UseMe4DockerData' not found ($i tries left)"
       fi
     done
 }
