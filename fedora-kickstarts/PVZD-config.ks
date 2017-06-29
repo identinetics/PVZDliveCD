@@ -1,4 +1,6 @@
 %post
+echo "=== processing pvzd-config.ks"
+
 # LXDE and LXDM configuration
 
 # create /etc/sysconfig/desktop (needed for installation)
@@ -72,7 +74,7 @@ rm -rf /home/liveuser/desktop/liveinst.desktop
 
 hostnamectl set-hostname livecd --static
 
-#Don't show sudoers lecture
+# Don't show sudoers lecture
 cat > /etc/sudoers.d/privacy <<FOE
 Defaults    lecture = never
 FOE
@@ -81,10 +83,11 @@ FOE
 cat /opt/install/etc/fstab/TRANSFER.entry >> /etc/fstab
 
 # install livecd_statusd
+mkdir -p /opt/install/log
 cp -r /opt/install/status /usr/local/
-
-# Python3 packages
-pip3 install jinja2 pathlib
+/bin/pip3 install jinja2 pathlib > /opt/install/log/pvzd-config-pip.log 2>&1
+mkdir /home/liveuser/.config/midori
+cp /opt/install/liveuser/midori-config /home/liveuser/.config/midori/config
 
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser

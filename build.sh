@@ -7,9 +7,9 @@ echo $PWD > PROJHOMEvar
 mkdir -p livecache
 
 sudo livecd-creator -d -v  -c fedora-kickstarts/Fedora-lxde-remix.ks \
-    --cache=$PROJ_HOME/livecache/ \
+    --cache=$PROJ_HOME/livecache/ --cacheonly \
     --releasever=25 \
-    --nocleanup | tee > build.log
+    --nocleanup  | tee > build.log 2>&1
 
 #livemedia-creator --make-iso \
 #     --ks fedora-kickstarts/Fedora-lxde-remix.ks \

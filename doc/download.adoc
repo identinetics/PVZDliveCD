@@ -2,9 +2,10 @@
 
 Aktuelle Version
 
-- https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build86.iso[livecd-pvzdclient-v0_86 (2017-03-24)]
+- https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build105.iso[livecd-pvzdclient-v105 (2017-06-29)]
 
 Vorherige Versionen
 
+- https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build86.iso[livecd-pvzdclient-v0_86 (2017-03-24)]
 - https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build76.iso[livecd-pvzdclient-v0_77 (2017-02-16)]
 - https://www.test.portalverbund.gv.at/pvzdclient/livecd-PVZDliveCD-v0_61.iso[livecd-pvzdclient-v0_61 (2016-10-20)]
