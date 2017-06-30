@@ -8,7 +8,7 @@
     <h2 style="margin-bottom: 1em">LiveCD Status</h2>
     <table class="pure-table">
         <tr><td>Component</td><td>Status</td><td>Details</td></tr>
-        {{ Plugins }}
+        {{Plugins}}
     </table>
 
 </body>

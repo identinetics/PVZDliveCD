@@ -80,7 +80,7 @@ patch_dockerd_config() {
     systemctl stop docker
     dockerdata_dir=$1/docker
     mkdir -p $dockerdata_dir
-    mount -o bind $dockerdata_dir /mnt/docker
+    mount -o bind $dockerdata_dir /run/media/liveuser/docker
     logger -p local0.info -t "local0"  "predocker.sh: Docker data dir mounted to $dockerdata_dir; now restarting dockerd"
     notify-send "predocker.sh: Docker data dir mounted to $dockerdata_dir; now restarting dockerd"
     systemctl daemon-reload
@@ -163,9 +163,9 @@ mount_offline_filesystems() {
     echo -n > /tmp/predocker/disks_tried_to_mount
     # mount found disks
     for disk in $flist; do
-        mkdir -p /mnt/${disk:5}
-        mount $disk /mnt/${disk:5}
-        echo /mnt/${disk:5} >> /tmp/predocker/disks_tried_to_mount
+        mkdir -p /run/media/liveuser/${disk:5}
+        mount $disk /run/media/liveuser/${disk:5}
+        echo /run/media/liveuser/${disk:5} >> /tmp/predocker/disks_tried_to_mount
     done
 }
 

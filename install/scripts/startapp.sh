@@ -62,6 +62,7 @@ get_userdefined_settings() {
 
 
 pull_or_update_image_if_online() {
+    check_free_space
     IMAGE=$($sudo docker images | perl -pe 's/\s+/:/' | grep $DOCKER_IMAGE | awk '{print $1}')
     if [[ -z $IMAGE ]]; then
         pull_image
@@ -164,6 +165,15 @@ run_docker_container() {
         $sudo docker run $runopt $runopt2
     else
         $sudo /usr/bin/xfce4-terminal -T $CONTAINERNAME --hide-menubar -e "docker run -it $runopt2"
+    fi
+}
+
+
+check_free_space() {
+    free_kbytes=$(df -k $DATADIR | awk '{print $4}' | tail -1)
+    if (( $free_kbytes < 2048000 )); then
+        logger -p local0.info -t "local0" "free space on $DATADIR below 1GB - docker pull may fail"
+        zenity --info --text "free space on $DATADIR below 2GB - docker pull may fail. Delete data or replace with larger device."  --title "Cannot pull docker image"
     fi
 }
 

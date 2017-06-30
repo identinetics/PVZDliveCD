@@ -4,18 +4,22 @@
 Generate an HTML table. Call each script in ./plugins and render a row
 '''
 
-import jinja2, os, shutil, subprocess
-from pathlib import Path
+import glob, os, shutil, subprocess
 
 status_codes = ('OK', 'not started', 'starting', 'error', 'not available', '')
-def main():
-    templatedir = os.getenv('TEMPLATEDIR', './static')
+templatedir = os.getenv('TEMPLATEDIR', './static')
+
+
+def render_template(plugins):
     with open(os.path.join(templatedir, 'status.html.template'), 'r') as f:
-        template = jinja2.Template(f.read())
+        template = f.read()
+    return template.replace('{{Plugins}}', plugins)
+
+def main():
 
     tablerows = ''
-    pluginpath = Path(os.path.abspath(os.path.dirname(__file__))) / 'plugins'
-    for filename in pluginpath.glob('*'):
+    pluginpath = os.path.join((os.path.abspath(os.path.dirname(__file__))), 'plugins')
+    for filename in glob.glob(os.path.join(pluginpath, '*')):
         try:
             output = subprocess.check_output([str(filename), ])
             rc = 0
@@ -23,16 +27,16 @@ def main():
             output = e.output
             rc = e.returncode
         table_row = '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(
-            Path(filename).stem,
+            filename[:-3],
             status_codes[rc],
             output.decode()
         )
         tablerows += table_row + '\n'
-    html = template.render(Plugins=tablerows, )
+    html = render_template(tablerows)
 
     with open('/tmp/status.html', 'w', encoding="utf-8") as f:
         f.write(html)
-        subprocess.call(["cp", "-r", str(Path(templatedir) / 'css/'), '/tmp/'])
+        subprocess.call(["cp", "-r", str(os.path.join((templatedir), 'css/')), '/tmp/'])
 
 
 if __name__ == '__main__':

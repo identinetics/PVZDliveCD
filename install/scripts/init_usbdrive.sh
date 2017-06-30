@@ -11,6 +11,7 @@ main() {
     partition_device
     make_filesystems
     mark_UseMe4DockerData_partition
+    show_results
 }
 
 
@@ -50,12 +51,18 @@ find_FAT_formatted_blockdevice() {
        TMP=${FATDEV/[0-9]*//}
        FATROOTDEV=${TMP%/}
        DEVATTR=$(lsblk --scsi -o 'NAME,FSTYPE,LABEL,VENDOR,MODEL,HOTPLUG,MOUNTPOINT' $FATROOTDEV)
-       echo "Found storage device:\n$DEVATTR"
-       echo "Selected storage device ${FATROOTDEV} for formatting, deleting any existing data on it"
+       echo -e "Found storage device with FAT partition:\n$DEVATTR"
+       lsblk | head -1
+       lsblk | grep $(basename $FATROOTDEV)
+       echo
+       echo "======================================================================================="
+       echo "Selecting storage device ${FATROOTDEV} for formatting, deleting any existing data on it"
+       echo "======================================================================================="
        while true; do
            read -p "Continue (YESSS/n)?" choice
            case "$choice" in
                YESSS ) break;;
+               yesss|yes|YES ) echo "make sure to type uppercase 'YESSS' woth 3 x 'S'";;
                n|N ) exit;;
                * ) echo "Invalid choice";;
            esac
@@ -73,8 +80,10 @@ partition_device() {
 
     # wipe storage drive
     logger -p local0.info -t "local0" -s "writing 2 partitions to $FATROOTDEV"
+    echo "=== zeroing out parition table on ${FATROOTDEV}2 ===" 1>&2
     $sudo dd if=/dev/zero of=$FATROOTDEV bs=512  count=1
 
+    echo "=== partition ${FATROOTDEV}2 with 1 100MB + a second partition filling the rest ===" 1>&2
     # partition with 1 100MB + a second partition filling the rest:
     # n=new, p=primary, partition=1, start=default, size=100MB
     # n=new, p=primary, partition=2, start=default, size=default
@@ -94,16 +103,21 @@ p
 w
 " | \
     $sudo fdisk $FATROOTDEV
+    echo "=== fdisk completed ===" 1>&2
     $sudo partprobe
+    echo "=== partprobe completed ===" 1>&2
 }
 
 
 make_filesystems() {
+    mnt=/run/media/liveuser
     logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}1 (vfat)"
+    echo "=== starting mkfs.vfat ===" 1>&2
     $sudo mkfs.vfat -n TRANSFER "${FATROOTDEV}1"
-    $sudo mkdir -p /mnt/transfer
-    $sudo mount "${FATROOTDEV}1" /mnt/transfer
-    $sudo touch /mnt/transfer/UseMe4Transfer
+    $sudo mkdir -p ${mnt}/transfer
+    echo "mounting ${FATROOTDEV}2 at ${mnt}/transfer, marking partition with 'UseMe4Transfer'"
+    $sudo mount "${FATROOTDEV}1" ${mnt}/transfer
+    $sudo touch ${mnt}/transfer/UseMe4Transfer
 
     # format and mark docker data partition
     logger -p local0.info -t "local0" -s "initializing ${FATROOTDEV}2 (ext4)"
@@ -112,9 +126,26 @@ make_filesystems() {
 
 
 mark_UseMe4DockerData_partition() {
-    $sudo mkdir -p /mnt/dockerdata
-    $sudo mount "${FATROOTDEV}2" /mnt/dockerdata
-    $sudo touch /mnt/dockerdata/UseMe4DockerData
+    $sudo mkdir -p ${mnt}/dockerdata
+    echo "=== mounting ${FATROOTDEV}2 at ${mnt}/dockerdata, marking partition with 'UseMe4DockerData' ===" 1>&2
+    $sudo mount "${FATROOTDEV}2" ${mnt}/dockerdata
+    $sudo touch ${mnt}/dockerdata/UseMe4DockerData
+}
+
+
+show_results() {
+    if [[ -e ${mnt}/dockerdata/UseMe4DockerData ]]; then
+        echo "Success: Docker data partition initialized and marked; mounted at ${mnt}/dockerdata"  
+    else
+        echo "Failure: Mark file of docker data partition not found - please check log"  
+    fi
+
+    if [[ -e ${mnt}/transfer/UseMe4Transfer ]]; then
+        echo "Success: transfer partition initialized and marked; mounted at ${mnt}/transfer"  
+    else
+        echo "Failure: Mark file of docker data partition not found - please check log"  
+    fi
+    read -p "Press Enter to exit" choice
 }
 
 
