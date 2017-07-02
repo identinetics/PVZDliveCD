@@ -42,9 +42,11 @@ find_FAT_formatted_blockdevice() {
     FATDEVCOUNT=$(wc -l < /tmp/fatdevs)
     if [[ $FATDEVCOUNT == 0 ]]; then
        echo "No storage device with FAT file system mounted"
+       read -p "Press Enter to exit" choice
        exit 1
     elif [[ $FATDEVCOUNT > 1 ]]; then
        echo "Only 1 storage device with FAT file system may be mounted for this tool"
+       read -p "Press Enter to exit" choice
        exit 2
     else
        FATDEV=$(cat /tmp/fatdevs)
