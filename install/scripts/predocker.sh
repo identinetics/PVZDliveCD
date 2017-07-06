@@ -46,9 +46,9 @@ check_if_already_done() {
 search_for_filesystem_with_markfile() {
     markfile=$1
     logger -p local0.info -t "local0" -s "predocker.sh: Searching $markfile in mounted devices (see /tmp/predocker/mounted_filesystems)"
+    mkdir -p '/tmp/predocker'
     get_mounted_filesystems
     marked_filesystem=''
-    mkdir -p '/tmp/predocker'
     marked_filesystem=$(find_data_dir_by_filelist "/tmp/predocker/mounted_filesystems" $markfile)
     if (( $? != 0 )); then
         mount_offline_filesystems
@@ -80,7 +80,7 @@ patch_dockerd_config() {
     systemctl stop docker
     dockerdata_dir=$1/docker
     mkdir -p $dockerdata_dir
-    mount -o bind $dockerdata_dir /run/media/liveuser/docker
+    mount -o bind $dockerdata_dir /run/dockerdata
     logger -p local0.info -t "local0"  "predocker.sh: Docker data dir mounted to $dockerdata_dir; now restarting dockerd"
     notify-send "predocker.sh: Docker data dir mounted to $dockerdata_dir; now restarting dockerd"
     systemctl daemon-reload

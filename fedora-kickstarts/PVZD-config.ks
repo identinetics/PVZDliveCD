@@ -56,8 +56,8 @@ cp -p /usr/share/applications/xfce4/terminal/terminalrc /home/liveuser/.config/x
 
 
 #Docker
-mkdir -p /mnt/docker
-sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/mnt\/docker -G docker/' /usr/lib/systemd/system/docker.service
+mkdir -p /run/dockerdata
+sed -i 's/ExecStart=\/usr\/bin\/dockerd/ExecStart=\/usr\/bin\/dockerd -g \/run\/dockerdata -G docker/' /usr/lib/systemd/system/docker.service
 
 # create default config for clipit to suppress the dialog on startup
 mkdir -p /home/liveuser/.config/clipit
