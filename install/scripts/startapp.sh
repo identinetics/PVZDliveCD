@@ -4,6 +4,7 @@ main() {
     set_trace
     get_opts "$@"
     init_sudo
+    _start_buergerkarte
     get_container_config
     get_userdefined_settings
     pull_or_update_image_if_online
@@ -45,6 +46,19 @@ init_sudo() {
     if [ $(id -u) -ne 0 ]; then
         sudo="sudo"
     fi
+}
+
+
+_start_buergerkarte() {
+    logger -p local0.info "MOCCA Webstart (lokale Bürgerkartenumgebung)"
+    #skip settings dialogue:
+    #cd
+    #cp -pr --no-clobber /opt/setup/mocca_settings/.java/ .
+    #cp -pr --no-clobber /opt/setup/mocca_settings/.mocca .
+    #cp -pr --no-clobber /opt/setup/mocca_settings/.cache .
+    #cp -pr --no-clobber /opt/setup/mocca_settings/.config .
+    javaws http://webstart.buergerkarte.at/mocca/webstart/mocca.jnlp
+
 }
 
 

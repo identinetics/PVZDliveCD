@@ -148,4 +148,8 @@ libreoffice
 # Python 3 (Status scripts)
 python3
 
+# JRE and icedtea-web (= Java Webstart)
+icedtea-web
+
+
 %end

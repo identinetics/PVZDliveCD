@@ -54,6 +54,7 @@ init_sudo() {
 set_run_args() {
     source $DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
     export ENVSETTINGS="
+        --net=host
         -e DISPLAY=$DISPLAY
         -e http_proxy=$http_proxy
         -e https_proxy=$https_proxy
