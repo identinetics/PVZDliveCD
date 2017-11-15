@@ -2,6 +2,8 @@
 
 rm -f PVZDliveCD*.iso
 
+show_repo_status.sh
+
 PROJ_HOME=$PWD
 echo $PWD > PROJHOMEvar
 mkdir -p livecache
