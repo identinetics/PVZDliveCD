@@ -16,6 +16,7 @@ main() {
 
     data_dir=$(search_for_filesystem_with_markfile $mark_datadir) || exit $?
     xfer_dir=$(search_for_filesystem_with_markfile $mark_xferdir) || exit $?
+    remount_filesystem_writeable $xfer_dir
     create_exportenv_script $data_dir $xfer_dir
     
     set_http_proxy_config
@@ -136,16 +137,16 @@ find_data_dir_by_filelist() {
 }
 
 
-#remount_filesystem() {
-#    fs_old_path=$1
-#    fs_new_path=$2
-#    fs_device=$(mount | grep $fs_old_path | awk '{print $1}')
-#    #mount -o bind and mount -o remount do not work reliably -> unmount/mount
-#    umount $fs_device
-#    mount -o uid=1000,gid=1000 $fs_device $fs_new_path
-#    logger -p local0.info -t "local0" -s "Filesystem $fs_old_path remounted at $fsnew_path"
-#    return 0
-#}
+remount_filesystem_writeable() {
+    fs_old_path=$1
+    fs_new_path=$2
+    fs_device=$(mount | grep $fs_old_path | awk '{print $1}')
+    #mount -o bind and mount -o remount do not work reliably -> unmount/mount
+    umount $fs_device
+    mount -o uid=1000,gid=1000,umask=000 $fs_device $fs_new_path
+    logger -p local0.info -t "local0" -s "Filesystem $fs_old_path remounted at $fsnew_path"
+    return 0
+}
 
 
 get_mounted_filesystems() {

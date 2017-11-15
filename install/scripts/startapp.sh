@@ -57,8 +57,9 @@ _start_buergerkarte() {
     #cp -pr --no-clobber /opt/setup/mocca_settings/.mocca .
     #cp -pr --no-clobber /opt/setup/mocca_settings/.cache .
     #cp -pr --no-clobber /opt/setup/mocca_settings/.config .
-    javaws http://webstart.buergerkarte.at/mocca/webstart/mocca.jnlp
-
+    if [[ ! $(pgrep -f javaws.itweb) ]]; then
+        javaws https://webstart.buergerkarte.at/mocca/webstart/mocca.jnlp
+    fi
 }
 
 

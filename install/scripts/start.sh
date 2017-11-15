@@ -66,7 +66,7 @@ start_default_application() {
       notify-send  "Data medium found"  -t 3000
       source /tmp/set_data_dir.sh > /tmp/startapp.log 2>&1
       source $DATADIR/set_httpproxy.sh >> /tmp/startapp.log 2>&1
-      /usr/local/bin/startapp.sh -t >> /tmp/startapp.log 2>&1   # nested shell must not assign own tty! (search for docker exec -it returns “cannot enable tty mode on non tty input”
+      /usr/local/bin/startapp.sh -tV >> /tmp/startapp.log 2>&1   # nested shell must not assign own tty! (search for docker exec -it returns “cannot enable tty mode on non tty input”
     else
       notify-send "Data medium not found. Connect a medium (see doc) and run 'sudo /usr/local/bin/start.sh -d /dev/<my-data-drive>'" --timeout 3000
     fi
