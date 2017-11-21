@@ -2,7 +2,7 @@
 
 Aktuelle Version
 
-- https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build122.iso[livecd-pvzdclient-v111 (2017-11-15)]
+- https://www.test.portalverbund.gv.at/pvzdclient/PVZDliveCD-build122.iso[livecd-pvzdclient-v122 (2017-11-15)]
 
 Vorherige Versionen
 
