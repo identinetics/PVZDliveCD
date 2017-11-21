@@ -9,9 +9,7 @@ echo "PROJHOME is $PROJHOME"
 mkdir -p $INSTALL_ROOT/opt
 cp -r $PROJHOME/install $INSTALL_ROOT/opt/
 cp $PROJHOME/BUILD $INSTALL_ROOT/opt/
-cat $PROJHOME/BUILD
 cp $PROJHOME/REPO_STATUS $INSTALL_ROOT/opt/
-cat $PROJHOME/REPO_STATUS
 
 # add app scripts
 cp $PROJHOME/install/scripts/* $INSTALL_ROOT/usr/local/bin/
